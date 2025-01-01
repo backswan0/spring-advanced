@@ -14,33 +14,42 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
-    @Override
-    public boolean supportsParameter(MethodParameter parameter) {
-        boolean hasAuthAnnotation = parameter.getParameterAnnotation(Auth.class) != null;
-        boolean isAuthUserType = parameter.getParameterType().equals(AuthUser.class);
+  @Override
+  public boolean supportsParameter(MethodParameter parameter) {
+    boolean hasAuthAnnotation = parameter
+        .getParameterAnnotation(Auth.class) != null;
 
-        // @Auth 어노테이션과 AuthUser 타입이 함께 사용되지 않은 경우 예외 발생
-        if (hasAuthAnnotation != isAuthUserType) {
-            throw new AuthException("@Auth와 AuthUser 타입은 함께 사용되어야 합니다.");
-        }
+    boolean isAuthUserType = parameter.getParameterType()
+        .equals(AuthUser.class);
 
-        return hasAuthAnnotation;
+    // @Auth 어노테이션과 AuthUser 타입이 함께 사용되지 않은 경우 예외 발생
+    boolean isAuthTypeMismatch = hasAuthAnnotation != isAuthUserType;
+
+    if (isAuthTypeMismatch) {
+      throw new AuthException("@Auth와 AuthUser 타입은 함께 사용되어야 합니다.");
     }
 
-    @Override
-    public Object resolveArgument(
-            @Nullable MethodParameter parameter,
-            @Nullable ModelAndViewContainer mavContainer,
-            NativeWebRequest webRequest,
-            @Nullable WebDataBinderFactory binderFactory
-    ) {
-        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+    return hasAuthAnnotation;
+  }
 
-        // JwtFilter 에서 set 한 userId, email, userRole 값을 가져옴
-        Long userId = (Long) request.getAttribute("userId");
-        String email = (String) request.getAttribute("email");
-        UserRole userRole = UserRole.of((String) request.getAttribute("userRole"));
+  @Override
+  public Object resolveArgument(
+      @Nullable MethodParameter parameter,
+      @Nullable ModelAndViewContainer mavContainer,
+      NativeWebRequest webRequest,
+      @Nullable WebDataBinderFactory binderFactory
+  ) {
+    HttpServletRequest request = (HttpServletRequest) webRequest
+        .getNativeRequest();
 
-        return new AuthUser(userId, email, userRole);
-    }
+    // JwtFilter 에서 set 한 userId, email, userRole 값을 가져옴
+    Long userId = (Long) request.getAttribute("userId");
+
+    String email = (String) request.getAttribute("email");
+
+    UserRole userRole = UserRole.of((String) request
+        .getAttribute("userRole"));
+
+    return new AuthUser(userId, email, userRole);
+  }
 }
