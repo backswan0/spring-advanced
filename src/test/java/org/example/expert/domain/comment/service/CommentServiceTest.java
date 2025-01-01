@@ -1,7 +1,7 @@
 package org.example.expert.domain.comment.service;
 
-import org.example.expert.domain.comment.dto.request.CommentSaveRequest;
-import org.example.expert.domain.comment.dto.response.CommentSaveResponse;
+import org.example.expert.domain.comment.dto.request.CreateCommentRequestDto;
+import org.example.expert.domain.comment.dto.response.CreateCommentResponseDto;
 import org.example.expert.domain.comment.entity.Comment;
 import org.example.expert.domain.comment.repository.CommentRepository;
 import org.example.expert.domain.common.dto.AuthUser;
@@ -37,14 +37,14 @@ class CommentServiceTest {
     public void comment_등록_중_할일을_찾지_못해_에러가_발생한다() {
         // given
         long todoId = 1;
-        CommentSaveRequest request = new CommentSaveRequest("contents");
+        CreateCommentRequestDto request = new CreateCommentRequestDto("contents");
         AuthUser authUser = new AuthUser(1L, "email", UserRole.USER);
 
         given(todoRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when
         ServerException exception = assertThrows(ServerException.class, () -> {
-            commentService.saveComment(authUser, todoId, request);
+            commentService.createComment(authUser, todoId, request);
         });
 
         // then
@@ -55,7 +55,7 @@ class CommentServiceTest {
     public void comment를_정상적으로_등록한다() {
         // given
         long todoId = 1;
-        CommentSaveRequest request = new CommentSaveRequest("contents");
+        CreateCommentRequestDto request = new CreateCommentRequestDto("contents");
         AuthUser authUser = new AuthUser(1L, "email", UserRole.USER);
         User user = User.fromAuthUser(authUser);
         Todo todo = new Todo("title", "title", "contents", user);
@@ -65,7 +65,7 @@ class CommentServiceTest {
         given(commentRepository.save(any())).willReturn(comment);
 
         // when
-        CommentSaveResponse result = commentService.saveComment(authUser, todoId, request);
+        CreateCommentResponseDto result = commentService.createComment(authUser, todoId, request);
 
         // then
         assertNotNull(result);

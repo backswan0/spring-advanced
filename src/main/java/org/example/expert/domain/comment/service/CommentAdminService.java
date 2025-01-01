@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class CommentAdminService {
-
     private final CommentRepository commentRepository;
 
     @Transactional

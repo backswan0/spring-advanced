@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentSaveRequest {
+public class CreateCommentRequestDto {
 
     @NotBlank
     private String contents;

@@ -12,26 +12,37 @@ import org.example.expert.domain.user.entity.User;
 @NoArgsConstructor
 @Table(name = "comments")
 public class Comment extends Timestamped {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String contents;
+  private String contents;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(
+      name = "user_id",
+      nullable = false
+  )
+  private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "todo_id", nullable = false)
-    private Todo todo;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(
+      name = "todo_id",
+      nullable = false
+  )
+  private Todo todo;
 
-    public Comment(String contents, User user, Todo todo) {
-        this.contents = contents;
-        this.user = user;
-        this.todo = todo;
-    }
+  public Comment(
+      String contents,
+      User user,
+      Todo todo
+  ) {
+    this.contents = contents;
+    this.user = user;
+    this.todo = todo;
+  }
 
-    public void update(String contents) {
-        this.contents = contents;
-    }
+  public void update(String contents) {
+    this.contents = contents;
+  }
 }
