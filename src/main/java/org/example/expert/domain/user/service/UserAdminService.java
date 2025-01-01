@@ -2,7 +2,7 @@ package org.example.expert.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.common.exception.InvalidRequestException;
-import org.example.expert.domain.user.dto.request.UserRoleChangeRequest;
+import org.example.expert.domain.user.dto.request.UpdateUserRoleRequestDto;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.enums.UserRole;
 import org.example.expert.domain.user.repository.UserRepository;
@@ -13,11 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserAdminService {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Transactional
-    public void changeUserRole(long userId, UserRoleChangeRequest userRoleChangeRequest) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new InvalidRequestException("User not found"));
-        user.updateRole(UserRole.of(userRoleChangeRequest.getRole()));
-    }
+  @Transactional
+  public void updateUserRole(
+      long userId,
+      UpdateUserRoleRequestDto requestDto
+  ) {
+    User user = userRepository
+        .findById(userId)
+        .orElseThrow(
+            () -> new InvalidRequestException("User not found")
+        );
+
+    user.updateUserRole(UserRole.of(requestDto.getRole()));
+  }
 }

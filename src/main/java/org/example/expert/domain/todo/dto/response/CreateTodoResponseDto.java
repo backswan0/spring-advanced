@@ -1,7 +1,7 @@
 package org.example.expert.domain.todo.dto.response;
 
 import lombok.Getter;
-import org.example.expert.domain.user.dto.response.UserResponse;
+import org.example.expert.domain.user.dto.response.UserResponseDto;
 
 @Getter
 public class CreateTodoResponseDto {
@@ -10,14 +10,14 @@ public class CreateTodoResponseDto {
   private final String title;
   private final String contents;
   private final String weather;
-  private final UserResponse user;
+  private final UserResponseDto user;
 
   public CreateTodoResponseDto(
       Long id,
       String title,
       String contents,
       String weather,
-      UserResponse user
+      UserResponseDto user
   ) {
     this.id = id;
     this.title = title;

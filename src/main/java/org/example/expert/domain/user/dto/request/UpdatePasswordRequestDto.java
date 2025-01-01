@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserChangePasswordRequest {
+public class UpdatePasswordRequestDto {
 
-    @NotBlank
-    private String oldPassword;
-    @NotBlank
-    private String newPassword;
+  @NotBlank
+  private String oldPassword;
+  @NotBlank
+  private String newPassword;
 }
