@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ManagerSaveRequest {
+public class CreateManagerRequestDto {
 
     @NotNull
     private Long managerUserId; // 일정 작상자가 배치하는 유저 id
