@@ -8,10 +8,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TodoSaveRequest {
+public class CreateTodoRequestDto {
 
     @NotBlank
     private String title;
+
     @NotBlank
     private String contents;
 }
