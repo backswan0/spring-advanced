@@ -1,7 +1,7 @@
 package org.example.expert.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.expert.domain.user.dto.request.UpdateUserRoleRequestDto;
+import org.example.expert.domain.user.dto.request.UpdateAccessLevelRequestDto;
 import org.example.expert.domain.user.service.UserAdminService;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +17,7 @@ public class UserAdminController {
   @PatchMapping("/admin/users/{userId}")
   public void updateUserRole(
       @PathVariable long userId,
-      @RequestBody UpdateUserRoleRequestDto requestDto
+      @RequestBody UpdateAccessLevelRequestDto requestDto
   ) {
     userAdminService.updateUserRole(userId, requestDto);
   }

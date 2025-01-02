@@ -19,10 +19,9 @@ public enum AccessLevel {
             level -> level
                 .name()
                 .equalsIgnoreCase(accessLevel)
-        )
-        .findFirst()
+        ).findFirst()
         .orElseThrow(
-            () -> new InvalidRequestException("Invalid AccessLevel")
+            () -> new InvalidRequestException("Access level is invalid")
         );
   }
 }

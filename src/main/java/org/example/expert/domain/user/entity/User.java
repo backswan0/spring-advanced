@@ -23,6 +23,7 @@ public class User extends Timestamped {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
   @Column(unique = true)
   private String email;
 
@@ -51,7 +52,9 @@ public class User extends Timestamped {
     this.accessLevel = accessLevel;
   }
 
-  public static User fromAuthUser(AuthUser authUser) {
+  public static User fromAuthUser(
+      AuthUser authUser
+  ) {
     return new User(
         authUser.id(),
         authUser.email(),
@@ -63,7 +66,7 @@ public class User extends Timestamped {
     this.password = password;
   }
 
-  public void updateUserRole(AccessLevel accessLevel) {
+  public void updateAccessLevel(AccessLevel accessLevel) {
     this.accessLevel = accessLevel;
   }
 }

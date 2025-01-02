@@ -2,7 +2,7 @@ package org.example.expert.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.common.exception.InvalidRequestException;
-import org.example.expert.domain.user.dto.request.UpdateUserRoleRequestDto;
+import org.example.expert.domain.user.dto.request.UpdateAccessLevelRequestDto;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.enums.AccessLevel;
 import org.example.expert.domain.user.repository.UserRepository;
@@ -18,7 +18,7 @@ public class UserAdminService {
   @Transactional
   public void updateUserRole(
       long userId,
-      UpdateUserRoleRequestDto requestDto
+      UpdateAccessLevelRequestDto requestDto
   ) {
     User user = userRepository
         .findById(userId)
@@ -26,6 +26,6 @@ public class UserAdminService {
             () -> new InvalidRequestException("User not found")
         );
 
-    user.updateUserRole(AccessLevel.of(requestDto.getRole()));
+    user.updateAccessLevel(AccessLevel.of(requestDto.accessLevel()));
   }
 }
