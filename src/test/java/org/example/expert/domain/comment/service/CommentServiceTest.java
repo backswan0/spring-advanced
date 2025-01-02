@@ -8,6 +8,7 @@ import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.ServerException;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
+import org.example.expert.domain.user.dto.response.UserResponseDto;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.enums.AccessLevel;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ class CommentServiceTest {
 
         // when
         ServerException exception = assertThrows(ServerException.class, () -> {
-            commentService.createComment(authUser, todoId, request);
+            commentService.createComment(authUser, todoId, request.contents());
         });
 
         // then
@@ -65,9 +66,18 @@ class CommentServiceTest {
         given(commentRepository.save(any())).willReturn(comment);
 
         // when
-        CreateCommentResponseDto result = commentService.createComment(authUser, todoId, request);
+        Comment result = commentService.createComment(authUser, todoId, request.contents());
+
+        CreateCommentResponseDto responseDto = new CreateCommentResponseDto(
+            result.getId(),
+            result.getContents(),
+            new UserResponseDto(
+                result.getUser().getId(),
+                result.getUser().getEmail()
+            )
+        );
 
         // then
-        assertNotNull(result);
+        assertNotNull(responseDto);
     }
 }

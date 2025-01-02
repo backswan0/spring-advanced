@@ -5,8 +5,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
-import org.example.expert.domain.manager.dto.request.CreateManagerRequestDto;
-import org.example.expert.domain.manager.dto.response.CreateManagerResponseDto;
 import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
 import org.example.expert.domain.manager.entity.Manager;
 import org.example.expert.domain.manager.repository.ManagerRepository;
@@ -21,7 +19,6 @@ import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ManagerService {
 
   private final ManagerRepository managerRepository;
@@ -29,50 +26,49 @@ public class ManagerService {
   private final TodoRepository todoRepository;
 
   @Transactional
-  public CreateManagerResponseDto createManager(
+  public Manager createManager(
       AuthUser authUser,
       long todoId,
-      CreateManagerRequestDto requestDto
+      long userId
   ) {
 
-    // 일정을 만든 유저
-    User user = User.fromAuthUser(authUser);
-    Todo todo = todoRepository
-        .findById(todoId)
+    User userFromAuth = User.fromAuthUser(authUser);
+    Todo foundTodo = todoRepository.findById(todoId)
         .orElseThrow(
-            () -> new InvalidRequestException("Todo not found")
+            () -> new InvalidRequestException("Todo is not found")
         );
 
-    boolean isUserMismatch = !ObjectUtils
-        .nullSafeEquals(user.getId(), todo.getUser().getId());
+    boolean isUserInvalid = !ObjectUtils.nullSafeEquals(
+        userFromAuth.getId(),
+        foundTodo.getUser().getId()
+    );
 
-    if (isUserMismatch) {
-      throw new InvalidRequestException("담당자를 등록하려고 하는 유저가 일정을 만든 유저가 유효하지 않습니다.");
+    if (isUserInvalid) {
+      throw new InvalidRequestException("User is invalid");
     }
 
-    User managerUser = userRepository
-        .findById(requestDto.getManagerUserId())
+    User foundUser = userRepository.findById(userId)
         .orElseThrow(
-            () -> new InvalidRequestException("등록하려고 하는 담당자 유저가 존재하지 않습니다.")
+            () -> new InvalidRequestException("User is not found")
         );
 
-    boolean isSelfAssignment = ObjectUtils
-        .nullSafeEquals(user.getId(), managerUser.getId());
+    boolean isSelfAssignment = ObjectUtils.nullSafeEquals(
+        userFromAuth.getId(),
+        foundUser.getId()
+    );
 
     if (isSelfAssignment) {
-      throw new InvalidRequestException("일정 작성자는 본인을 담당자로 등록할 수 없습니다.");
+      throw new InvalidRequestException("Todo creator cannot assign self as manager");
     }
 
-    Manager manager = new Manager(managerUser, todo);
+    Manager managerToSave = new Manager(foundUser, foundTodo);
 
-    Manager savedManagerUser = managerRepository.save(manager);
+    Manager savedManager = managerRepository.save(managerToSave);
 
-    return new CreateManagerResponseDto(
-        savedManagerUser.getId(),
-        new UserResponseDto(managerUser.getId(), managerUser.getEmail())
-    );
+    return savedManager;
   }
 
+  @Transactional(readOnly = true)
   public List<ManagerResponseDto> readAllManagers(
       long todoId
   ) {
