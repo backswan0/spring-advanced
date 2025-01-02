@@ -3,9 +3,7 @@ package org.example.expert.domain.comment.service;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.example.expert.domain.comment.dto.request.CreateCommentRequestDto;
 import org.example.expert.domain.comment.dto.response.CommentResponseDto;
-import org.example.expert.domain.comment.dto.response.CreateCommentResponseDto;
 import org.example.expert.domain.comment.entity.Comment;
 import org.example.expert.domain.comment.repository.CommentRepository;
 import org.example.expert.domain.common.dto.AuthUser;
@@ -25,31 +23,27 @@ public class CommentService {
   private final CommentRepository commentRepository;
 
   @Transactional
-  public CreateCommentResponseDto createComment(
+  public Comment createComment(
       AuthUser authUser,
       long todoId,
-      CreateCommentRequestDto requestDto
+      String contents
   ) {
-    User user = User.fromAuthUser(authUser);
-    Todo todo = todoRepository
-        .findById(todoId)
+    User userFromAuth = User.fromAuthUser(authUser);
+
+    Todo foundTodo = todoRepository.findById(todoId)
         .orElseThrow(
             () -> new InvalidRequestException("Todo not found")
         ); // todo
 
-    Comment comment = new Comment(
-        requestDto.contents(),
-        user,
-        todo
+    Comment commentToSave = new Comment(
+        contents,
+        userFromAuth,
+        foundTodo
     );
 
-    Comment savedComment = commentRepository.save(comment);
+    Comment savedComment = commentRepository.save(commentToSave);
 
-    return new CreateCommentResponseDto(
-        savedComment.getId(),
-        savedComment.getContents(),
-        new UserResponseDto(user.getId(), user.getEmail())
-    );
+    return savedComment;
   }
 
   @Transactional(readOnly = true)
