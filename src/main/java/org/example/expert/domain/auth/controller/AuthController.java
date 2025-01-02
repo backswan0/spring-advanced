@@ -14,19 +14,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
+
   private final AuthService authService;
 
-  @PostMapping("/auth/signup")
+  @PostMapping("/auth/sign-up")
   public SignUpResponseDto signUp(
       @Valid @RequestBody SignUpRequestDto requestDto
   ) {
-    return authService.signUp(requestDto);
+    String bearerToken = authService.signUp(
+        requestDto.email(),
+        requestDto.password(),
+        requestDto.accessLevel()
+    );
+
+    return new SignUpResponseDto(bearerToken);
   }
 
-  @PostMapping("/auth/signin")
+  @PostMapping("/auth/sign-in")
   public SignInResponseDto signIn(
       @Valid @RequestBody SignInRequestDto requestDto
   ) {
-    return authService.signIn(requestDto);
+    String bearerToken = authService.signIn(
+        requestDto.email(),
+        requestDto.password()
+    );
+
+    return new SignInResponseDto(bearerToken);
   }
 }

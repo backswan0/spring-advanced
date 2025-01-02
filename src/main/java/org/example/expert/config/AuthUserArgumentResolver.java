@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.example.expert.domain.auth.exception.AuthException;
 import org.example.expert.domain.common.annotation.Auth;
 import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.user.enums.UserRole;
+import org.example.expert.domain.user.enums.AccessLevel;
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -42,14 +42,14 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
     HttpServletRequest request = (HttpServletRequest) webRequest
         .getNativeRequest();
 
-    // JwtFilter 에서 set 한 userId, email, userRole 값을 가져옴
+    // JwtFilter 에서 set 한 userId, email, accessLevel 값을 가져옴
     Long userId = (Long) request.getAttribute("userId");
 
     String email = (String) request.getAttribute("email");
 
-    UserRole userRole = UserRole.of((String) request
+    AccessLevel accessLevel = AccessLevel.of((String) request
         .getAttribute("userRole"));
 
-    return new AuthUser(userId, email, userRole);
+    return new AuthUser(userId, email, accessLevel);
   }
 }

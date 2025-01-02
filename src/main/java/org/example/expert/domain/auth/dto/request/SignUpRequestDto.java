@@ -4,12 +4,16 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record SignUpRequestDto(
+
     @NotBlank
-    @Email String email,
+    @Email
+    String email,
 
-    @NotBlank String password,
+    @NotBlank
+    String password,
 
-    @NotBlank String userRole
+    @NotBlank
+    String accessLevel
 ) {
 
 }
