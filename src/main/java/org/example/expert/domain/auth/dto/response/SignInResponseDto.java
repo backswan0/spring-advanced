@@ -1,13 +1,5 @@
 package org.example.expert.domain.auth.dto.response;
 
-import lombok.Getter;
+public record SignInResponseDto(String bearerToken) {
 
-@Getter
-public class SignInResponseDto {
-
-    private final String bearerToken;
-
-    public SignInResponseDto(String bearerToken) {
-        this.bearerToken = bearerToken;
-    }
 }
