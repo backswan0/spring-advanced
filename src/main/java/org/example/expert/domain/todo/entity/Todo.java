@@ -20,8 +20,11 @@ public class Todo extends Timestamped {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
   private String title;
+
   private String contents;
+
   private String weather;
 
   @ManyToOne(fetch = FetchType.LAZY)

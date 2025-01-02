@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.expert.client.WeatherClient;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
-import org.example.expert.domain.todo.dto.request.CreateTodoRequestDto;
 import org.example.expert.domain.todo.dto.response.TodoResponseDto;
-import org.example.expert.domain.todo.dto.response.CreateTodoResponseDto;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
@@ -26,30 +24,22 @@ public class TodoService {
   private final WeatherClient weatherClient;
 
   @Transactional
-  public CreateTodoResponseDto createTodo(
+  public Todo createTodo(
       AuthUser authUser,
-      CreateTodoRequestDto requestDto
+      String title,
+      String contents
   ) {
     User user = User.fromAuthUser(authUser);
-
     String weather = weatherClient.getTodayWeather();
 
     Todo todo = new Todo(
-        requestDto.getTitle(),
-        requestDto.getContents(),
+        title,
+        contents,
         weather,
         user
     );
 
-    Todo savedTodo = todoRepository.save(todo);
-
-    return new CreateTodoResponseDto(
-        savedTodo.getId(),
-        savedTodo.getTitle(),
-        savedTodo.getContents(),
-        weather,
-        new UserResponseDto(user.getId(), user.getEmail())
-    );
+    return todoRepository.save(todo);
   }
 
   public Page<TodoResponseDto> readAllTodos(
@@ -68,7 +58,7 @@ public class TodoService {
             todo.getWeather(),
             new UserResponseDto(todo.getUser().getId(), todo.getUser().getEmail()),
             todo.getCreatedAt(),
-            todo.getModifiedAt()
+            todo.getUpdatedAt()
         )
     );
   }
@@ -89,7 +79,7 @@ public class TodoService {
         todo.getWeather(),
         new UserResponseDto(user.getId(), user.getEmail()),
         todo.getCreatedAt(),
-        todo.getModifiedAt()
+        todo.getUpdatedAt()
     );
   }
 }
