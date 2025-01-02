@@ -5,16 +5,15 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
-import org.example.expert.domain.common.exception.ServerException;
-import org.example.expert.domain.user.enums.UserRole;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
+import org.example.expert.domain.common.exception.ServerException;
+import org.example.expert.domain.user.enums.AccessLevel;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Slf4j(topic = "JwtUtil")
 @Component
@@ -37,7 +36,7 @@ public class JwtUtil {
   public String createToken(
       Long userId,
       String email,
-      UserRole userRole
+      AccessLevel accessLevel
   ) {
     Date date = new Date();
 
@@ -45,7 +44,7 @@ public class JwtUtil {
         Jwts.builder()
             .setSubject(String.valueOf(userId))
             .claim("email", email)
-            .claim("userRole", userRole)
+            .claim("accessLevel", accessLevel)
             .setExpiration(new Date(date.getTime() + TOKEN_TIME))
             .setIssuedAt(date) // 발급일
             .signWith(key, signatureAlgorithm) // 암호화 알고리즘

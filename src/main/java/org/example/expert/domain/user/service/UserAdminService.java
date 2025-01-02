@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.user.dto.request.UpdateUserRoleRequestDto;
 import org.example.expert.domain.user.entity.User;
-import org.example.expert.domain.user.enums.UserRole;
+import org.example.expert.domain.user.enums.AccessLevel;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +26,6 @@ public class UserAdminService {
             () -> new InvalidRequestException("User not found")
         );
 
-    user.updateUserRole(UserRole.of(requestDto.getRole()));
+    user.updateUserRole(AccessLevel.of(requestDto.getRole()));
   }
 }

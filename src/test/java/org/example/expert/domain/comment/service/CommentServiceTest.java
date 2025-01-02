@@ -9,7 +9,7 @@ import org.example.expert.domain.common.exception.ServerException;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.entity.User;
-import org.example.expert.domain.user.enums.UserRole;
+import org.example.expert.domain.user.enums.AccessLevel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +38,7 @@ class CommentServiceTest {
         // given
         long todoId = 1;
         CreateCommentRequestDto request = new CreateCommentRequestDto("contents");
-        AuthUser authUser = new AuthUser(1L, "email", UserRole.USER);
+        AuthUser authUser = new AuthUser(1L, "email", AccessLevel.USER);
 
         given(todoRepository.findById(anyLong())).willReturn(Optional.empty());
 
@@ -56,10 +56,10 @@ class CommentServiceTest {
         // given
         long todoId = 1;
         CreateCommentRequestDto request = new CreateCommentRequestDto("contents");
-        AuthUser authUser = new AuthUser(1L, "email", UserRole.USER);
+        AuthUser authUser = new AuthUser(1L, "email", AccessLevel.USER);
         User user = User.fromAuthUser(authUser);
         Todo todo = new Todo("title", "title", "contents", user);
-        Comment comment = new Comment(request.getContents(), user, todo);
+        Comment comment = new Comment(request.contents(), user, todo);
 
         given(todoRepository.findById(anyLong())).willReturn(Optional.of(todo));
         given(commentRepository.save(any())).willReturn(comment);

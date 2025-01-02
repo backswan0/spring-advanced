@@ -4,15 +4,18 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
-import jakarta.servlet.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.expert.domain.user.enums.UserRole;
-
-import java.io.IOException;
+import org.example.expert.domain.user.enums.AccessLevel;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -65,8 +68,8 @@ public class JwtFilter implements Filter {
         return;
       }
 
-      UserRole userRole = UserRole.valueOf(
-          claims.get("userRole", String.class)
+      AccessLevel accessLevel = AccessLevel.valueOf(
+          claims.get("accessLevel", String.class)
       );
 
       httpRequest.setAttribute(
@@ -79,12 +82,12 @@ public class JwtFilter implements Filter {
       );
       httpRequest.setAttribute(
           "userRole",
-          claims.get("userRole")
+          claims.get("accessLevel")
       );
 
       if (url.startsWith("/admin")) {
         // 관리자 권한이 없는 경우 403을 반환합니다.
-        if (!UserRole.ADMIN.equals(userRole)) {
+        if (!AccessLevel.ADMIN.equals(accessLevel)) {
           httpResponse.sendError(
               HttpServletResponse.SC_FORBIDDEN,
               "관리자 권한이 없습니다."

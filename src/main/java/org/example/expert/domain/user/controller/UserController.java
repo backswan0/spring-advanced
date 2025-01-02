@@ -7,21 +7,33 @@ import org.example.expert.domain.user.dto.request.UpdatePasswordRequestDto;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
 import org.example.expert.domain.user.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<UserResponseDto> getUser(@PathVariable long userId) {
-        return ResponseEntity.ok(userService.readUserById(userId));
-    }
+  @GetMapping("/users/{userId}")
+  public ResponseEntity<UserResponseDto> findUserById(
+      @PathVariable long userId
+  ) {
+    return ResponseEntity.ok(userService.readUserById(userId));
+  }
 
-    @PutMapping("/users")
-    public void changePassword(@Auth AuthUser authUser, @RequestBody UpdatePasswordRequestDto updatePasswordRequestDto) {
-        userService.updatePassword(authUser.getId(), updatePasswordRequestDto);
-    }
+  @PutMapping("/users")
+  public void updatePassword(
+      @Auth AuthUser authUser,
+      @RequestBody UpdatePasswordRequestDto requestDto
+  ) {
+    userService.updatePassword(
+        authUser.id(),
+        requestDto
+    );
+  }
 }

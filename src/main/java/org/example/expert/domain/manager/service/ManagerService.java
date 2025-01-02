@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.manager.dto.request.CreateManagerRequestDto;
-import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
 import org.example.expert.domain.manager.dto.response.CreateManagerResponseDto;
+import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
 import org.example.expert.domain.manager.entity.Manager;
 import org.example.expert.domain.manager.repository.ManagerRepository;
 import org.example.expert.domain.todo.entity.Todo;
@@ -34,6 +34,7 @@ public class ManagerService {
       long todoId,
       CreateManagerRequestDto requestDto
   ) {
+
     // 일정을 만든 유저
     User user = User.fromAuthUser(authUser);
     Todo todo = todoRepository
@@ -42,7 +43,8 @@ public class ManagerService {
             () -> new InvalidRequestException("Todo not found")
         );
 
-    boolean isUserMismatch = !ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId());
+    boolean isUserMismatch = !ObjectUtils
+        .nullSafeEquals(user.getId(), todo.getUser().getId());
 
     if (isUserMismatch) {
       throw new InvalidRequestException("담당자를 등록하려고 하는 유저가 일정을 만든 유저가 유효하지 않습니다.");
@@ -54,7 +56,8 @@ public class ManagerService {
             () -> new InvalidRequestException("등록하려고 하는 담당자 유저가 존재하지 않습니다.")
         );
 
-    boolean isSelfAssignment = ObjectUtils.nullSafeEquals(user.getId(), managerUser.getId());
+    boolean isSelfAssignment = ObjectUtils
+        .nullSafeEquals(user.getId(), managerUser.getId());
 
     if (isSelfAssignment) {
       throw new InvalidRequestException("일정 작성자는 본인을 담당자로 등록할 수 없습니다.");
@@ -79,18 +82,21 @@ public class ManagerService {
             () -> new InvalidRequestException("Todo not found")
         );
 
-    List<Manager> managerList = managerRepository
+    List<Manager> managerList = new ArrayList<>();
+
+    managerList = managerRepository
         .findAllByTodoId(todo.getId());
 
-    List<ManagerResponseDto> dtoList = new ArrayList<>();
+    List<ManagerResponseDto> managerDtoList = new ArrayList<>();
     for (Manager manager : managerList) {
       User user = manager.getUser();
-      dtoList.add(new ManagerResponseDto(
-          manager.getId(),
-          new UserResponseDto(user.getId(), user.getEmail())
-      ));
+      managerDtoList.add(new ManagerResponseDto(
+              manager.getId(),
+              new UserResponseDto(user.getId(), user.getEmail())
+          )
+      );
     }
-    return dtoList;
+    return managerDtoList;
   }
 
   @Transactional
@@ -124,7 +130,8 @@ public class ManagerService {
             () -> new InvalidRequestException("Manager not found")
         );
 
-    boolean isManagerMismatch = !ObjectUtils.nullSafeEquals(todo.getId(), manager.getTodo().getId());
+    boolean isManagerMismatch = !ObjectUtils.nullSafeEquals(todo.getId(),
+        manager.getTodo().getId());
 
     if (isManagerMismatch) {
       throw new InvalidRequestException("해당 일정에 등록된 담당자가 아닙니다.");

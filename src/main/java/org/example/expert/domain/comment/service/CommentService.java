@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CommentService {
 
   private final TodoRepository todoRepository;
@@ -36,10 +35,10 @@ public class CommentService {
         .findById(todoId)
         .orElseThrow(
             () -> new InvalidRequestException("Todo not found")
-        );
+        ); // todo
 
     Comment comment = new Comment(
-        requestDto.getContents(),
+        requestDto.contents(),
         user,
         todo
     );
@@ -53,6 +52,7 @@ public class CommentService {
     );
   }
 
+  @Transactional(readOnly = true)
   public List<CommentResponseDto> readAllComments(long todoId) {
     List<Comment> commentList = commentRepository
         .findAllByTodoId(todoId);

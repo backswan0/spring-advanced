@@ -18,7 +18,7 @@ import org.example.expert.domain.manager.repository.ManagerRepository;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.entity.User;
-import org.example.expert.domain.user.enums.UserRole;
+import org.example.expert.domain.user.enums.AccessLevel;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,7 +53,7 @@ class ManagerServiceTest {
     @Test
     void todo의_user가_null인_경우_예외가_발생한다() {
         // given
-        AuthUser authUser = new AuthUser(1L, "a@a.com", UserRole.USER);
+        AuthUser authUser = new AuthUser(1L, "a@a.com", AccessLevel.USER);
         long todoId = 1L;
         long managerUserId = 2L;
 
@@ -76,7 +76,7 @@ class ManagerServiceTest {
     public void manager_목록_조회에_성공한다() {
         // given
         long todoId = 1L;
-        User user = new User("user1@example.com", "password", UserRole.USER);
+        User user = new User("user1@example.com", "password", AccessLevel.USER);
         Todo todo = new Todo("Title", "Contents", "Sunny", user);
         ReflectionTestUtils.setField(todo, "id", todoId);
 
@@ -98,14 +98,14 @@ class ManagerServiceTest {
     @Test // 테스트코드 샘플
     void todo가_정상적으로_등록된다() {
         // given
-        AuthUser authUser = new AuthUser(1L, "a@a.com", UserRole.USER);
+        AuthUser authUser = new AuthUser(1L, "a@a.com", AccessLevel.USER);
         User user = User.fromAuthUser(authUser);  // 일정을 만든 유저
 
         long todoId = 1L;
         Todo todo = new Todo("Test Title", "Test Contents", "Sunny", user);
 
         long managerUserId = 2L;
-        User managerUser = new User("b@b.com", "password", UserRole.USER);  // 매니저로 등록할 유저
+        User managerUser = new User("b@b.com", "password", AccessLevel.USER);  // 매니저로 등록할 유저
         ReflectionTestUtils.setField(managerUser, "id", managerUserId);
 
         CreateManagerRequestDto createManagerRequestDto = new CreateManagerRequestDto(managerUserId); // request dto 생성

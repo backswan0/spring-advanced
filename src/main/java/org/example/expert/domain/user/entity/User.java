@@ -1,11 +1,18 @@
 package org.example.expert.domain.user.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.entity.Timestamped;
-import org.example.expert.domain.user.enums.UserRole;
+import org.example.expert.domain.user.enums.AccessLevel;
 
 @Getter
 @Entity
@@ -22,37 +29,41 @@ public class User extends Timestamped {
   private String password;
 
   @Enumerated(EnumType.STRING)
-  private UserRole userRole;
+  private AccessLevel accessLevel;
 
   public User(
       String email,
       String password,
-      UserRole userRole
+      AccessLevel accessLevel
   ) {
     this.email = email;
     this.password = password;
-    this.userRole = userRole;
+    this.accessLevel = accessLevel;
   }
 
   private User(
       Long id,
       String email,
-      UserRole userRole
+      AccessLevel accessLevel
   ) {
     this.id = id;
     this.email = email;
-    this.userRole = userRole;
+    this.accessLevel = accessLevel;
   }
 
   public static User fromAuthUser(AuthUser authUser) {
-    return new User(authUser.getId(), authUser.getEmail(), authUser.getUserRole());
+    return new User(
+        authUser.id(),
+        authUser.email(),
+        authUser.accessLevel()
+    );
   }
 
   public void updatePassword(String password) {
     this.password = password;
   }
 
-  public void updateUserRole(UserRole userRole) {
-    this.userRole = userRole;
+  public void updateUserRole(AccessLevel accessLevel) {
+    this.accessLevel = accessLevel;
   }
 }
