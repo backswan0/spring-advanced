@@ -84,9 +84,25 @@ public class TodoController {
   }
 
   @GetMapping("/{todoId}")
-  public ResponseEntity<TodoResponseDto> readTodo(
+  public ResponseEntity<TodoResponseDto> readTodoById(
       @PathVariable long todoId
   ) {
-    return ResponseEntity.ok(todoService.readTodo(todoId));
+
+    Todo foundTodo = todoService.readTodoById(todoId);
+
+    TodoResponseDto responseDto = new TodoResponseDto(
+        foundTodo.getId(),
+        foundTodo.getTitle(),
+        foundTodo.getContents(),
+        foundTodo.getWeather(),
+        new UserResponseDto(
+            foundTodo.getUser().getId(),
+            foundTodo.getUser().getEmail()
+        ),
+        foundTodo.getCreatedAt(),
+        foundTodo.getUpdatedAt()
+    );
+
+    return new ResponseEntity<>(responseDto, HttpStatus.OK);
   }
 }

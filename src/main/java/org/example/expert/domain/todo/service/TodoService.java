@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.expert.client.WeatherClient;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
-import org.example.expert.domain.todo.dto.response.TodoResponseDto;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
-import org.example.expert.domain.user.dto.response.UserResponseDto;
 import org.example.expert.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,7 +36,9 @@ public class TodoService {
         user
     );
 
-    return todoRepository.save(todo);
+    Todo savedTodo = todoRepository.save(todo);
+
+    return savedTodo;
   }
 
   @Transactional(readOnly = true)
@@ -49,28 +49,21 @@ public class TodoService {
     Pageable pageable = PageRequest
         .of(page - 1, size);
 
-    return todoRepository
+    Page<Todo> todoPage = todoRepository
         .findAllByOrderByUpdatedAtDesc(pageable);
+
+    return todoPage;
   }
 
   @Transactional(readOnly = true)
-  public TodoResponseDto readTodo(long todoId) {
-    Todo todo = todoRepository
+  public Todo readTodoById(long todoId) {
+
+    Todo foundTodo = todoRepository
         .findById(todoId)
         .orElseThrow(
             () -> new InvalidRequestException("Todo is not found")
         ); // todo
 
-    User user = todo.getUser();
-
-    return new TodoResponseDto(
-        todo.getId(),
-        todo.getTitle(),
-        todo.getContents(),
-        todo.getWeather(),
-        new UserResponseDto(user.getId(), user.getEmail()),
-        todo.getCreatedAt(),
-        todo.getUpdatedAt()
-    );
+    return foundTodo;
   }
 }
