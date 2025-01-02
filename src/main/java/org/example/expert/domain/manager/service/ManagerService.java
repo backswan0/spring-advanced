@@ -5,12 +5,10 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
-import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
 import org.example.expert.domain.manager.entity.Manager;
 import org.example.expert.domain.manager.repository.ManagerRepository;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
-import org.example.expert.domain.user.dto.response.UserResponseDto;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -69,30 +67,20 @@ public class ManagerService {
   }
 
   @Transactional(readOnly = true)
-  public List<ManagerResponseDto> readAllManagers(
+  public List<Manager> readAllManagers(
       long todoId
   ) {
-    Todo todo = todoRepository
-        .findById(todoId)
+    Todo foundTodo = todoRepository.findById(todoId)
         .orElseThrow(
-            () -> new InvalidRequestException("Todo not found")
+            () -> new InvalidRequestException("Todo is not found")
         );
 
     List<Manager> managerList = new ArrayList<>();
 
     managerList = managerRepository
-        .findAllByTodoId(todo.getId());
+        .findAllByTodoId(foundTodo.getId());
 
-    List<ManagerResponseDto> managerDtoList = new ArrayList<>();
-    for (Manager manager : managerList) {
-      User user = manager.getUser();
-      managerDtoList.add(new ManagerResponseDto(
-              manager.getId(),
-              new UserResponseDto(user.getId(), user.getEmail())
-          )
-      );
-    }
-    return managerDtoList;
+    return managerList;
   }
 
   @Transactional

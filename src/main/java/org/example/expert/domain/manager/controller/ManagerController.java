@@ -2,6 +2,7 @@ package org.example.expert.domain.manager.controller;
 
 import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.config.JwtUtil;
@@ -58,12 +59,29 @@ public class ManagerController {
 
   @GetMapping
   public ResponseEntity<List<ManagerResponseDto>> readAllManagers(
-      @PathVariable long todoId
+      @PathVariable long todoId // todo 이건 왜 있을까??
   ) {
-    List<ManagerResponseDto> responseDtos = managerService
-        .readAllManagers(todoId);
 
-    return new ResponseEntity<>(responseDtos, HttpStatus.OK);
+    List<Manager> managerList = new ArrayList<>();
+
+    managerList = managerService.readAllManagers(todoId);
+
+    List<ManagerResponseDto> managerDtoList = new ArrayList<>();
+
+    managerDtoList = managerList.stream()
+        .map(manager -> {
+              UserResponseDto responseDto = new UserResponseDto(
+                  manager.getUser().getId(),
+                  manager.getUser().getEmail()
+              );
+              return new ManagerResponseDto(
+                  manager.getId(),
+                  responseDto
+              );
+            }
+        ).toList();
+
+    return new ResponseEntity<>(managerDtoList, HttpStatus.OK);
   }
 
   @DeleteMapping("/{managerId}")
