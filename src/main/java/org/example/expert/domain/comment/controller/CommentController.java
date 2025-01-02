@@ -1,6 +1,7 @@
 package org.example.expert.domain.comment.controller;
 
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.comment.dto.request.CreateCommentRequestDto;
@@ -56,10 +57,27 @@ public class CommentController {
   public ResponseEntity<List<CommentResponseDto>> readAllComments(
       @PathVariable long todoId
   ) {
-    List<CommentResponseDto> dtoList = commentService.readAllComments(todoId);
+    List<Comment> commentList = new ArrayList<>();
 
-    return new ResponseEntity<>(dtoList, HttpStatus.OK);
+    commentList = commentService.readAllComments(todoId);
+
+    List<CommentResponseDto> commentDtoList = new ArrayList<>();
+
+    commentDtoList = commentList.stream()
+        .map(comment -> {
+              UserResponseDto responseDto = new UserResponseDto(
+                  comment.getUser().getId(),
+                  comment.getUser().getEmail()
+              );
+              return new CommentResponseDto(
+                  comment.getId(),
+                  comment.getContents(),
+                  responseDto
+              );
+            }
+        ).toList();
+
+    return new ResponseEntity<>(commentDtoList, HttpStatus.OK);
   }
-
   // 자기 것도 수정할 수는 있어야 하니까 api 추가를 해야 한다. update / delete
 }
