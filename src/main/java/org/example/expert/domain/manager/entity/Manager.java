@@ -9,13 +9,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.user.entity.User;
 
 @Getter
 @Entity
-@NoArgsConstructor
 @Table(name = "managers")
 public class Manager {
 
@@ -27,15 +25,18 @@ public class Manager {
   @JoinColumn(
       name = "user_id",
       nullable = false
-  ) // 일정 만든 사람 id
+  )
   private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY) // 일정 id
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(
       name = "todo_id",
       nullable = false
   )
   private Todo todo;
+
+  protected Manager() {
+  }
 
   public Manager(
       User user,
