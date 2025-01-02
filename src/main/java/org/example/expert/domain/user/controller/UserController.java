@@ -44,7 +44,8 @@ public class UserController {
   ) {
     userService.updatePassword(
         authUser.id(),
-        requestDto
+        requestDto.oldPassword(),
+        requestDto.newPassword()
     );
 
     return new ResponseEntity<>(HttpStatus.OK);
