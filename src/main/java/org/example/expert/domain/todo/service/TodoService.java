@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class TodoService {
 
   private final TodoRepository todoRepository;
@@ -42,33 +41,25 @@ public class TodoService {
     return todoRepository.save(todo);
   }
 
-  public Page<TodoResponseDto> readAllTodos(
+  @Transactional(readOnly = true)
+  public Page<Todo> readAllTodos(
       int page,
       int size
   ) {
-    Pageable pageable = PageRequest.of(page - 1, size);
+    Pageable pageable = PageRequest
+        .of(page - 1, size);
 
-    Page<Todo> todos = todoRepository
-        .findAllByOrderByModifiedAtDesc(pageable);
-
-    return todos.map(todo -> new TodoResponseDto(
-            todo.getId(),
-            todo.getTitle(),
-            todo.getContents(),
-            todo.getWeather(),
-            new UserResponseDto(todo.getUser().getId(), todo.getUser().getEmail()),
-            todo.getCreatedAt(),
-            todo.getUpdatedAt()
-        )
-    );
+    return todoRepository
+        .findAllByOrderByUpdatedAtDesc(pageable);
   }
 
+  @Transactional(readOnly = true)
   public TodoResponseDto readTodo(long todoId) {
     Todo todo = todoRepository
         .findById(todoId)
         .orElseThrow(
-            () -> new InvalidRequestException("Todo not found")
-        );
+            () -> new InvalidRequestException("Todo is not found")
+        ); // todo
 
     User user = todo.getUser();
 

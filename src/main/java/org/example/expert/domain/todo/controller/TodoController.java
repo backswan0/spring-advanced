@@ -17,16 +17,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/todos")
 @RequiredArgsConstructor
 public class TodoController {
 
   private final TodoService todoService;
 
-  @PostMapping("/todos")
+  @PostMapping
   public ResponseEntity<CreateTodoResponseDto> createTodo(
       @Auth AuthUser authUser,
       @Valid @RequestBody CreateTodoRequestDto requestDto
@@ -51,15 +53,37 @@ public class TodoController {
     return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
   }
 
-  @GetMapping("/todos")
+  @GetMapping
   public ResponseEntity<Page<TodoResponseDto>> readAllTodos(
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size
   ) {
-    return ResponseEntity.ok(todoService.readAllTodos(page, size));
+
+    Page<Todo> todoPage = todoService
+        .readAllTodos(
+            page,
+            size
+        );
+
+    Page<TodoResponseDto> responseDtoPage = todoPage.map(
+        todo -> new TodoResponseDto(
+            todo.getId(),
+            todo.getTitle(),
+            todo.getContents(),
+            todo.getWeather(),
+            new UserResponseDto(
+                todo.getUser().getId(),
+                todo.getUser().getEmail()
+            ),
+            todo.getCreatedAt(),
+            todo.getUpdatedAt()
+        )
+    );
+
+    return new ResponseEntity<>(responseDtoPage, HttpStatus.OK);
   }
 
-  @GetMapping("/todos/{todoId}")
+  @GetMapping("/{todoId}")
   public ResponseEntity<TodoResponseDto> readTodo(
       @PathVariable long todoId
   ) {
