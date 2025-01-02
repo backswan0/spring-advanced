@@ -19,19 +19,16 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final JwtUtil jwtUtil;
 
-  // todo 여력이 된다면 dto 변환을 controller에서 하도록 리팩토링하기
   @Transactional
   public String signUp(
       String email,
       String password,
       String accessLevelString
   ) {
-
-    boolean isEmailRegistered = userRepository
-        .findByEmail(email)
+    boolean isEmailAlreadyRegistered = userRepository.findByEmail(email)
         .isPresent();
 
-    if (isEmailRegistered) {
+    if (isEmailAlreadyRegistered) {
       throw new InvalidRequestException("Email is already registered");
     } // todo
 
@@ -39,45 +36,47 @@ public class AuthService {
 
     AccessLevel accessLevel = AccessLevel.of(accessLevelString);
 
-    User user = new User(
+    User userToSave = new User(
         email,
         encodedPassword,
         accessLevel
     );
 
-    User savedUser = userRepository.save(user);
+    User savedUser = userRepository.save(userToSave);
 
-    return jwtUtil.createToken(
+    String token = jwtUtil.createToken(
         savedUser.getId(),
         savedUser.getEmail(),
         savedUser.getAccessLevel()
     );
+
+    return jwtUtil.substringToken(token);
   }
 
   public String signIn(
       String email,
       String password
   ) {
-    User foundUser = userRepository
-        .findByEmail(email)
+    User foundUser = userRepository.findByEmail(email)
         .orElseThrow(
-            () -> new InvalidRequestException("User is not registered.")
+            () -> new InvalidRequestException("User is not registered")
         ); // todo
 
-    boolean isPasswordDifferent = !passwordEncoder
-        .matches(
-            password,
-            foundUser.getPassword()
-        );
+    boolean isPasswordDifferent = !passwordEncoder.matches(
+        password,
+        foundUser.getPassword()
+    );
 
     if (isPasswordDifferent) {
       throw new AuthException("Password does not match");
     } // todo
 
-    return jwtUtil.createToken(
+    String token = jwtUtil.createToken(
         foundUser.getId(),
         foundUser.getEmail(),
         foundUser.getAccessLevel()
     );
+
+    return jwtUtil.substringToken(token);
   }
 }
