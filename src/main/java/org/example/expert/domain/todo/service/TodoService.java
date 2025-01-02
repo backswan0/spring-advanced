@@ -46,11 +46,9 @@ public class TodoService {
       int page,
       int size
   ) {
-    Pageable pageable = PageRequest
-        .of(page - 1, size);
+    Pageable pageable = PageRequest.of(page - 1, size);
 
-    Page<Todo> todoPage = todoRepository
-        .findAllByOrderByUpdatedAtDesc(pageable);
+    Page<Todo> todoPage = todoRepository.findAllByOrderByUpdatedAtDesc(pageable);
 
     return todoPage;
   }
@@ -58,8 +56,7 @@ public class TodoService {
   @Transactional(readOnly = true)
   public Todo readTodoById(long todoId) {
 
-    Todo foundTodo = todoRepository
-        .findById(todoId)
+    Todo foundTodo = todoRepository.findById(todoId)
         .orElseThrow(
             () -> new InvalidRequestException("Todo is not found")
         ); // todo
