@@ -2,8 +2,8 @@ package org.example.expert.domain.todo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.expert.client.WeatherClient;
+import org.example.expert.config.EntityFinderUtil;
 import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.entity.User;
@@ -56,10 +56,10 @@ public class TodoService {
   @Transactional(readOnly = true)
   public Todo readTodoById(long todoId) {
 
-    Todo foundTodo = todoRepository.findById(todoId)
-        .orElseThrow(
-            () -> new InvalidRequestException("Todo is not found")
-        );
+    Todo foundTodo = EntityFinderUtil.findEntityById(
+        todoRepository.findById(todoId),
+        Todo.class
+    );
 
     return foundTodo;
   }

@@ -21,7 +21,8 @@ public class UserService {
   public User readUserById(long userId) {
 
     User foundUser = EntityFinderUtil.findEntityById(
-        userRepository.findById(userId)
+        userRepository.findById(userId),
+        User.class
     );
 
     return foundUser;
@@ -51,7 +52,8 @@ public class UserService {
     }
 
     User foundUser = EntityFinderUtil.findEntityById(
-        userRepository.findById(userId)
+        userRepository.findById(userId),
+        User.class
     );
 
     boolean isPasswordSame = passwordEncoder.matches(

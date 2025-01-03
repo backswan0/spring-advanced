@@ -1,7 +1,7 @@
 package org.example.expert.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.expert.domain.common.exception.InvalidRequestException;
+import org.example.expert.config.EntityFinderUtil;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.enums.AccessLevel;
 import org.example.expert.domain.user.repository.UserRepository;
@@ -19,10 +19,10 @@ public class UserAdminService {
       long userId,
       String accessLevel
   ) {
-    User foundUser = userRepository.findById(userId)
-        .orElseThrow(
-            () -> new InvalidRequestException("User is not found")
-        );
+    User foundUser = EntityFinderUtil.findEntityById(
+        userRepository.findById(userId),
+        User.class
+    );
 
     foundUser.updateAccessLevel(AccessLevel.of(accessLevel));
   }
