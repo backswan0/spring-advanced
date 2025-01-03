@@ -22,33 +22,39 @@ public class WeatherClient {
   }
 
   public String getTodayWeather() {
-    ResponseEntity<WeatherDto[]> responseEntity = restTemplate
-        .getForEntity(
-            buildWeatherApiUri(),
-            WeatherDto[].class
-        );
+    ResponseEntity<WeatherDto[]> responseEntity = restTemplate.getForEntity(
+        buildWeatherApiUri(),
+        WeatherDto[].class
+    );
 
     WeatherDto[] weatherArray = responseEntity.getBody();
 
-    if (!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
+    boolean isErrorStatus = !HttpStatus.OK.equals(
+        responseEntity.getStatusCode()
+    );
+
+    if (isErrorStatus) {
       throw new ServerException(
-          "날씨 데이터를 가져오는데 실패했습니다. 상태 코드: "
+          "Weather data is failing to retrieve. Status code: "
               + responseEntity.getStatusCode()
       );
     }
-    if (weatherArray == null || weatherArray.length == 0) {
-      throw new ServerException("날씨 데이터가 없습니다.");
+    boolean isWeatherDataInvalid =
+        weatherArray == null || weatherArray.length == 0;
+
+    if (isWeatherDataInvalid) {
+      throw new ServerException("Weather data is not found");
     }
 
     String today = getCurrentDate();
 
     for (WeatherDto weatherDto : weatherArray) {
-      if (today.equals(weatherDto.getDate())) {
-        return weatherDto.getWeather();
+      if (today.equals(weatherDto.date())) {
+        return weatherDto.weather();
       }
-    }
+    } // todo stream으로?
 
-    throw new ServerException("오늘에 해당하는 날씨 데이터를 찾을 수 없습니다.");
+    throw new ServerException("Weather data for today is not found");
   }
 
   private URI buildWeatherApiUri() {
