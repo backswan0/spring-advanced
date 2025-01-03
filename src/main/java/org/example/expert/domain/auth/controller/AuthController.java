@@ -23,24 +23,13 @@ public class AuthController {
   public SignUpResponseDto signUp(
       @Valid @RequestBody SignUpRequestDto requestDto
   ) {
-    String bearerToken = authService.signUp(
-        requestDto.email(),
-        requestDto.password(),
-        requestDto.accessLevel()
-    );
-
-    return new SignUpResponseDto(bearerToken);
+    return authService.signUp(requestDto);
   }
 
   @PostMapping("/sign-in")
   public SignInResponseDto signIn(
       @Valid @RequestBody SignInRequestDto requestDto
   ) {
-    String bearerToken = authService.signIn(
-        requestDto.email(),
-        requestDto.password()
-    );
-
-    return new SignInResponseDto(bearerToken);
+    return authService.signIn(requestDto);
   }
 }

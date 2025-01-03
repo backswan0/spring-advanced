@@ -3,6 +3,10 @@ package org.example.expert.domain.auth.service;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.config.JwtUtil;
 import org.example.expert.config.PasswordEncoder;
+import org.example.expert.domain.auth.dto.request.SignInRequestDto;
+import org.example.expert.domain.auth.dto.request.SignUpRequestDto;
+import org.example.expert.domain.auth.dto.response.SignInResponseDto;
+import org.example.expert.domain.auth.dto.response.SignUpResponseDto;
 import org.example.expert.domain.auth.exception.AuthException;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.user.entity.User;
@@ -20,24 +24,23 @@ public class AuthService {
   private final JwtUtil jwtUtil;
 
   @Transactional
-  public String signUp(
-      String email,
-      String password,
-      String accessLevelString
+  public SignUpResponseDto signUp(
+      SignUpRequestDto requestDto
+
   ) {
-    boolean isEmailAlreadyRegistered = userRepository.findByEmail(email)
+    boolean isAlreadyRegistered = userRepository.findByEmail(requestDto.email())
         .isPresent();
 
-    if (isEmailAlreadyRegistered) {
+    if (isAlreadyRegistered) {
       throw new InvalidRequestException("Email is already registered");
     }
 
-    String encodedPassword = passwordEncoder.encode(password);
+    String encodedPassword = passwordEncoder.encode(requestDto.password());
 
-    AccessLevel accessLevel = AccessLevel.of(accessLevelString);
+    AccessLevel accessLevel = AccessLevel.of(requestDto.accessLevel());
 
     User userToSave = new User(
-        email,
+        requestDto.email(),
         encodedPassword,
         accessLevel
     );
@@ -50,20 +53,19 @@ public class AuthService {
         savedUser.getAccessLevel()
     );
 
-    return jwtUtil.substringToken(token);
+    return new SignUpResponseDto(jwtUtil.substringToken(token));
   }
 
-  public String signIn(
-      String email,
-      String password
+  public SignInResponseDto signIn(
+      SignInRequestDto requestDto
   ) {
-    User foundUser = userRepository.findByEmail(email)
+    User foundUser = userRepository.findByEmail(requestDto.email())
         .orElseThrow(
             () -> new InvalidRequestException("User is not registered")
         );
 
     boolean isPasswordDifferent = !passwordEncoder.matches(
-        password,
+        requestDto.password(),
         foundUser.getPassword()
     );
 
@@ -77,6 +79,6 @@ public class AuthService {
         foundUser.getAccessLevel()
     );
 
-    return jwtUtil.substringToken(token);
+    return new SignInResponseDto(jwtUtil.substringToken(token));
   }
 }
