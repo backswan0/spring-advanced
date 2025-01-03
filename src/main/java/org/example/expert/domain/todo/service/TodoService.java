@@ -59,7 +59,7 @@ public class TodoService {
     Todo foundTodo = todoRepository.findById(todoId)
         .orElseThrow(
             () -> new InvalidRequestException("Todo is not found")
-        ); // todo
+        );
 
     return foundTodo;
   }

@@ -79,5 +79,5 @@ public class CommentController {
 
     return new ResponseEntity<>(commentDtoList, HttpStatus.OK);
   }
-  // 자기 것도 수정할 수는 있어야 하니까 api 추가를 해야 한다. update / delete
+  // todo 자기 것도 수정할 수 있어야 하니까 api 필요(update / delete)
 }

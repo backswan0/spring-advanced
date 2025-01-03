@@ -11,7 +11,7 @@ public class CommentAdminService {
 
   private final CommentRepository commentRepository;
 
-  // todo 물리 삭제 아닌가? 왜 물리 삭제로 했을까?
+  // todo 왜 물리 삭제로 했을까?
   @Transactional
   public void deleteComment(long commentId) {
     commentRepository.deleteById(commentId);

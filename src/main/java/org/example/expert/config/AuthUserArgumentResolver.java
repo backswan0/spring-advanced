@@ -22,7 +22,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
     boolean isAuthUserType = parameter.getParameterType()
         .equals(AuthUser.class);
 
-    // @Auth 어노테이션과 AuthUser 타입이 함께 사용되지 않은 경우 예외 발생
+    // @Auth 어노테이션과 AuthUser 타입이 함께 사용되지 않으면 예외 발생
     boolean isAuthTypeMismatch = hasAuthAnnotation != isAuthUserType;
 
     if (isAuthTypeMismatch) {
@@ -42,7 +42,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
     HttpServletRequest request = (HttpServletRequest) webRequest
         .getNativeRequest();
 
-    // JwtFilter 에서 set 한 userId, email, accessLevel 값을 가져옴
+    // JwtFilter에서 set한 userId, email, accessLevel 값을 가져옴
     Long userId = (Long) request.getAttribute("userId");
 
     String email = (String) request.getAttribute("email");

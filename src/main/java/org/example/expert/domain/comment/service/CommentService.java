@@ -31,7 +31,7 @@ public class CommentService {
     Todo foundTodo = todoRepository.findById(todoId)
         .orElseThrow(
             () -> new InvalidRequestException("Todo not found")
-        ); // todo
+        );
 
     Comment commentToSave = new Comment(
         contents,

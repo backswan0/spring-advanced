@@ -16,10 +16,10 @@ public class CommentAdminController {
 
   @DeleteMapping("/admin/comments/{commentId}")
   public ResponseEntity<Void> deleteComment(
-      // @Auth AuthUser authUser,
+      // todo 삭제할 권한 검증 시 @Auth AuthUser authUser 사용 필요
       @PathVariable long commentId
   ) {
-    // 삭제할 권한이 있는지 검사 해야 함
+    // todo 삭제할 권한이 있는지 검증 필요
     commentAdminService.deleteComment(commentId);
 
     return new ResponseEntity<>(HttpStatus.OK);

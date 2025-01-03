@@ -30,7 +30,7 @@ public class AuthService {
 
     if (isEmailAlreadyRegistered) {
       throw new InvalidRequestException("Email is already registered");
-    } // todo
+    }
 
     String encodedPassword = passwordEncoder.encode(password);
 
@@ -60,7 +60,7 @@ public class AuthService {
     User foundUser = userRepository.findByEmail(email)
         .orElseThrow(
             () -> new InvalidRequestException("User is not registered")
-        ); // todo
+        );
 
     boolean isPasswordDifferent = !passwordEncoder.matches(
         password,
@@ -69,7 +69,7 @@ public class AuthService {
 
     if (isPasswordDifferent) {
       throw new AuthException("Password does not match");
-    } // todo
+    }
 
     String token = jwtUtil.createToken(
         foundUser.getId(),

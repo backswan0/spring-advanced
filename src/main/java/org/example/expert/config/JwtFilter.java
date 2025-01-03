@@ -47,7 +47,7 @@ public class JwtFilter implements Filter {
     String bearerJwt = httpRequest.getHeader("Authorization");
 
     if (bearerJwt == null) {
-      // 토큰이 없는 경우 400을 반환합니다.
+      // 토큰이 없으면 400 반환
       httpResponse.sendError(
           HttpServletResponse.SC_BAD_REQUEST,
           "JWT token is required"
@@ -58,7 +58,7 @@ public class JwtFilter implements Filter {
     String jwt = jwtUtil.substringToken(bearerJwt);
 
     try {
-      // JWT 유효성 검사와 claims 추출
+      // JWT 유효성 검사 및 claims 추출
       Claims claims = jwtUtil.extractClaims(jwt);
       if (claims == null) {
         httpResponse.sendError(
@@ -86,7 +86,7 @@ public class JwtFilter implements Filter {
       );
 
       if (url.startsWith("/admin")) {
-        // 관리자 권한이 없는 경우 403을 반환합니다.
+        // 관리자 권한이 없으면 403 반환
         if (!AccessLevel.ADMIN.equals(accessLevel)) {
           httpResponse.sendError(
               HttpServletResponse.SC_FORBIDDEN,
