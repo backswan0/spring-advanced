@@ -3,7 +3,10 @@ package org.example.expert.domain.user.service;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.config.EntityFinderUtil;
 import org.example.expert.config.PasswordEncoder;
+import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
+import org.example.expert.domain.user.dto.request.UpdatePasswordRequestDto;
+import org.example.expert.domain.user.dto.response.UserResponseDto;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -18,7 +21,7 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
 
   @Transactional(readOnly = true)
-  public User readUserById(long userId) {
+  public UserResponseDto readUserById(long userId) {
 
     User foundUser = EntityFinderUtil.findEntityById(
         userRepository,
@@ -26,23 +29,25 @@ public class UserService {
         User.class
     );
 
-    return foundUser;
+    return new UserResponseDto(
+        foundUser.getId(),
+        foundUser.getEmail()
+    );
   }
 
   @Transactional
   public void updatePassword(
-      long userId,
-      String oldPassword,
-      String newPassword
+      AuthUser authUser,
+      UpdatePasswordRequestDto requestDto
   ) {
 
-    if (newPassword.length() < 8) {
+    if (requestDto.newPassword().length() < 8) {
       throw new InvalidRequestException(
           "New password must be more than 8"
       );
     }
 
-    boolean lacksDigit = !newPassword.matches(".*\\d.*");
+    boolean lacksDigit = !requestDto.newPassword().matches(".*\\d.*");
 
     if (lacksDigit) {
       throw new InvalidRequestException(
@@ -50,9 +55,9 @@ public class UserService {
       );
     }
 
-    boolean lacksCapital = !newPassword.matches(".*[A-Z].*");
+    boolean lacksCapitalLetter = !requestDto.newPassword().matches(".*[A-Z].*");
 
-    if (lacksCapital) {
+    if (lacksCapitalLetter) {
       throw new InvalidRequestException(
           "New password must include capital letter"
       );
@@ -60,12 +65,12 @@ public class UserService {
 
     User foundUser = EntityFinderUtil.findEntityById(
         userRepository,
-        userId,
+        authUser.id(),
         User.class
     );
 
     boolean isPasswordSame = passwordEncoder.matches(
-        newPassword,
+        requestDto.newPassword(),
         foundUser.getPassword()
     );
 
@@ -76,7 +81,7 @@ public class UserService {
     }
 
     boolean isPasswordDifferent = !passwordEncoder.matches(
-        oldPassword,
+        requestDto.oldPassword(),
         foundUser.getPassword()
     );
 
@@ -86,6 +91,9 @@ public class UserService {
       );
     }
 
-    foundUser.updatePassword(passwordEncoder.encode(newPassword));
+    foundUser.updatePassword(passwordEncoder.encode(
+            requestDto.newPassword()
+        )
+    );
   }
 }

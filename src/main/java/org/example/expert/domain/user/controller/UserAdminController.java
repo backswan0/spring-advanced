@@ -23,7 +23,7 @@ public class UserAdminController {
   ) {
     userAdminService.updateAccessLevel(
         userId,
-        requestDto.accessLevel()
+        requestDto
     );
 
     return new ResponseEntity<>(HttpStatus.OK);

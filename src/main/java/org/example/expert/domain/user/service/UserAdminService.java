@@ -2,6 +2,7 @@ package org.example.expert.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.expert.config.EntityFinderUtil;
+import org.example.expert.domain.user.dto.request.UpdateAccessLevelRequestDto;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.enums.AccessLevel;
 import org.example.expert.domain.user.repository.UserRepository;
@@ -17,7 +18,7 @@ public class UserAdminService {
   @Transactional
   public void updateAccessLevel(
       long userId,
-      String accessLevel
+      UpdateAccessLevelRequestDto requestDto
   ) {
     User foundUser = EntityFinderUtil.findEntityById(
         userRepository,
@@ -25,6 +26,10 @@ public class UserAdminService {
         User.class
     );
 
-    foundUser.updateAccessLevel(AccessLevel.of(accessLevel));
+    foundUser.updateAccessLevel(
+        AccessLevel.of(
+            requestDto.accessLevel()
+        )
+    );
   }
 }
