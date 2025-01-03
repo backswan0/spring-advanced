@@ -1,6 +1,7 @@
 package org.example.expert.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.expert.config.EntityFinderUtil;
 import org.example.expert.config.PasswordEncoder;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.user.entity.User;
@@ -18,10 +19,10 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public User readUserById(long userId) {
-    User foundUser = userRepository.findById(userId)
-        .orElseThrow(
-            () -> new InvalidRequestException("User not found")
-        );
+
+    User foundUser = EntityFinderUtil.findEntityById(
+        userRepository.findById(userId)
+    );
 
     return foundUser;
   }
@@ -49,14 +50,13 @@ public class UserService {
       throw new InvalidRequestException("New password must include capital letter");
     }
 
-    User user = userRepository.findById(userId)
-        .orElseThrow(
-            () -> new InvalidRequestException("User is not found")
-        );
+    User foundUser = EntityFinderUtil.findEntityById(
+        userRepository.findById(userId)
+    );
 
     boolean isPasswordSame = passwordEncoder.matches(
         newPassword,
-        user.getPassword()
+        foundUser.getPassword()
     );
 
     if (isPasswordSame) {
@@ -65,13 +65,13 @@ public class UserService {
 
     boolean isPasswordDifferent = !passwordEncoder.matches(
         oldPassword,
-        user.getPassword()
+        foundUser.getPassword()
     );
 
     if (isPasswordDifferent) {
       throw new InvalidRequestException("Password does not match");
     }
 
-    user.updatePassword(passwordEncoder.encode(newPassword));
+    foundUser.updatePassword(passwordEncoder.encode(newPassword));
   }
 }
