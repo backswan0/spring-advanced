@@ -50,7 +50,7 @@ public class JwtFilter implements Filter {
       // 토큰이 없는 경우 400을 반환합니다.
       httpResponse.sendError(
           HttpServletResponse.SC_BAD_REQUEST,
-          "JWT 토큰이 필요합니다."
+          "JWT token is required"
       );
       return;
     }
@@ -63,7 +63,7 @@ public class JwtFilter implements Filter {
       if (claims == null) {
         httpResponse.sendError(
             HttpServletResponse.SC_BAD_REQUEST,
-            "잘못된 JWT 토큰입니다."
+            "JWT token is wrong"
         );
         return;
       }
@@ -90,7 +90,7 @@ public class JwtFilter implements Filter {
         if (!AccessLevel.ADMIN.equals(accessLevel)) {
           httpResponse.sendError(
               HttpServletResponse.SC_FORBIDDEN,
-              "관리자 권한이 없습니다."
+              "Admin authority is required"
           );
           return;
         }
@@ -100,28 +100,28 @@ public class JwtFilter implements Filter {
 
       chain.doFilter(request, response);
     } catch (SecurityException | MalformedJwtException e) {
-      log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.", e);
+      log.error("JWT signature is invalid", e);
       httpResponse.sendError(
           HttpServletResponse.SC_UNAUTHORIZED,
-          "유효하지 않는 JWT 서명입니다."
+          "JWT signature is invalid"
       );
     } catch (ExpiredJwtException e) {
-      log.error("Expired JWT token, 만료된 JWT token 입니다.", e);
+      log.error("JWT token is expired", e);
       httpResponse.sendError(
           HttpServletResponse.SC_UNAUTHORIZED,
-          "만료된 JWT 토큰입니다."
+          "JWT token is expired"
       );
     } catch (UnsupportedJwtException e) {
-      log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.", e);
+      log.error("JWT token is unsupported", e);
       httpResponse.sendError(
           HttpServletResponse.SC_BAD_REQUEST,
-          "지원되지 않는 JWT 토큰입니다."
+          "JWT token is unsupported"
       );
     } catch (Exception e) {
-      log.error("Invalid JWT token, 유효하지 않는 JWT 토큰 입니다.", e);
+      log.error("JWT token is invalid", e);
       httpResponse.sendError(
           HttpServletResponse.SC_BAD_REQUEST,
-          "유효하지 않는 JWT 토큰입니다."
+          "JWT token is invalid"
       );
     }
   }

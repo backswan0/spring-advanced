@@ -9,7 +9,10 @@ public class PasswordEncoder {
   public String encode(String rawPassword) {
     return BCrypt
         .withDefaults()
-        .hashToString(BCrypt.MIN_COST, rawPassword.toCharArray());
+        .hashToString(
+            BCrypt.MIN_COST,
+            rawPassword.toCharArray()
+        );
   }
 
   public boolean matches(
@@ -18,7 +21,10 @@ public class PasswordEncoder {
   ) {
     BCrypt.Result result = BCrypt
         .verifyer()
-        .verify(rawPassword.toCharArray(), encodedPassword);
+        .verify(
+            rawPassword.toCharArray(),
+            encodedPassword
+        );
     return result.verified;
   }
 }

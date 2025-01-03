@@ -46,7 +46,7 @@ public class JwtUtil {
             .claim("email", email)
             .claim("accessLevel", accessLevel)
             .setExpiration(new Date(date.getTime() + TOKEN_TIME))
-            .setIssuedAt(date) // 발급일
+            .setIssuedAt(date)
             .signWith(key, signatureAlgorithm) // 암호화 알고리즘
             .compact();
   }
@@ -59,7 +59,7 @@ public class JwtUtil {
     if (isValidToken) {
       return tokenValue.substring(7);
     }
-    throw new ServerException("Not Found Token");
+    throw new ServerException("Token is not found");
   }
 
   public Claims extractClaims(String token) {
