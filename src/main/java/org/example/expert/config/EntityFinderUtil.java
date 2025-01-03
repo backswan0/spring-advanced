@@ -5,9 +5,11 @@ import org.example.expert.domain.common.exception.InvalidRequestException;
 
 public class EntityFinderUtil {
 
-  // 레포지토리를 넘겨보도록, 옵셔널 대신에
-  public static <T> T findEntityById(Optional<T> entityOptional, Class<T> entityClass) {
-
+  // todo 레포지토리를 넘겨보도록, 옵셔널 대신에
+  public static <T> T findEntityById(
+      Optional<T> entityOptional,
+      Class<T> entityClass
+  ) {
     return entityOptional.orElseThrow(
         () -> new InvalidRequestException(
             getEntityName(entityClass) + " is not found")

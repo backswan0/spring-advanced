@@ -3,6 +3,7 @@ package org.example.expert.domain.manager.service;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.example.expert.config.EntityFinderUtil;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.manager.entity.Manager;
@@ -31,10 +32,11 @@ public class ManagerService {
   ) {
 
     User userFromAuth = User.fromAuthUser(authUser);
-    Todo foundTodo = todoRepository.findById(todoId)
-        .orElseThrow(
-            () -> new InvalidRequestException("Todo is not found")
-        );
+
+    Todo foundTodo = EntityFinderUtil.findEntityById(
+        todoRepository.findById(todoId),
+        Todo.class
+    );
 
     boolean isUserInvalid = !ObjectUtils.nullSafeEquals(
         userFromAuth.getId(),
@@ -42,13 +44,15 @@ public class ManagerService {
     );
 
     if (isUserInvalid) {
-      throw new InvalidRequestException("User is invalid");
+      throw new InvalidRequestException(
+          "User is invalid"
+      );
     }
 
-    User foundUser = userRepository.findById(userId)
-        .orElseThrow(
-            () -> new InvalidRequestException("User is not found")
-        );
+    User foundUser = EntityFinderUtil.findEntityById(
+        userRepository.findById(userId),
+        User.class
+    );
 
     boolean isSelfAssignment = ObjectUtils.nullSafeEquals(
         userFromAuth.getId(),
@@ -56,7 +60,9 @@ public class ManagerService {
     );
 
     if (isSelfAssignment) {
-      throw new InvalidRequestException("Todo creator cannot assign self as manager");
+      throw new InvalidRequestException(
+          "Todo creator cannot assign self as manager"
+      );
     }
 
     Manager managerToSave = new Manager(foundUser, foundTodo);
@@ -70,10 +76,10 @@ public class ManagerService {
   public List<Manager> readAllManagers(
       long todoId
   ) {
-    Todo foundTodo = todoRepository.findById(todoId)
-        .orElseThrow(
-            () -> new InvalidRequestException("Todo is not found")
-        );
+    Todo foundTodo = EntityFinderUtil.findEntityById(
+        todoRepository.findById(todoId),
+        Todo.class
+    );
 
     List<Manager> managerList = new ArrayList<>();
 
@@ -89,15 +95,15 @@ public class ManagerService {
       long todoId,
       long managerId
   ) {
-    User foundUser = userRepository.findById(userId)
-        .orElseThrow(
-            () -> new InvalidRequestException("User is not found")
-        );
+    User foundUser = EntityFinderUtil.findEntityById(
+        userRepository.findById(userId),
+        User.class
+    );
 
-    Todo foundTodo = todoRepository.findById(todoId)
-        .orElseThrow(
-            () -> new InvalidRequestException("Todo is not found")
-        );
+    Todo foundTodo = EntityFinderUtil.findEntityById(
+        todoRepository.findById(todoId),
+        Todo.class
+    );
 
     boolean isInvalidUser = foundTodo.getUser() == null
         || !ObjectUtils.nullSafeEquals(
@@ -106,13 +112,15 @@ public class ManagerService {
     );
 
     if (isInvalidUser) {
-      throw new InvalidRequestException("User who created todo is invalid");
+      throw new InvalidRequestException(
+          "User who created todo is invalid"
+      );
     }
 
-    Manager foundManager = managerRepository.findById(managerId)
-        .orElseThrow(
-            () -> new InvalidRequestException("Manager is not found")
-        );
+    Manager foundManager = EntityFinderUtil.findEntityById(
+        managerRepository.findById(managerId),
+        Manager.class
+    );
 
     boolean isManagerMismatch = !ObjectUtils.nullSafeEquals(
         foundTodo.getId(),
@@ -120,7 +128,9 @@ public class ManagerService {
     );
 
     if (isManagerMismatch) {
-      throw new InvalidRequestException("Manager is not assigned to todo");
+      throw new InvalidRequestException(
+          "Manager is not assigned to todo"
+      );
     }
 
     managerRepository.delete(foundManager);
