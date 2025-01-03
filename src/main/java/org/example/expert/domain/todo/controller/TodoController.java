@@ -46,7 +46,13 @@ public class TodoController {
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size
   ) {
-    Pageable adjustedPageable = PageRequest.of(page - 1, size);
+    // 음수가 나오지 않도록 Math.max 사용
+    int adjustedPage = Math.max(page - 1, 0);
+    int adjustedSize = Math.max(size, 1);
+
+    Pageable adjustedPageable = PageRequest.of(
+        adjustedPage,
+        adjustedSize);
 
     Page<TodoResponseDto> todoDtoPage = todoService.readAllTodos(adjustedPageable);
 
