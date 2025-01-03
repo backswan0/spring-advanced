@@ -1,4 +1,4 @@
-package org.example.expert.domain.todo.entity;
+package org.example.expert.domain.common.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -14,10 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.expert.domain.comment.entity.Comment;
-import org.example.expert.domain.common.entity.Timestamped;
-import org.example.expert.domain.manager.entity.Manager;
-import org.example.expert.domain.user.entity.User;
 
 @Getter
 @Entity

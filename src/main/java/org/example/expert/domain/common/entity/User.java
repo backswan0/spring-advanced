@@ -1,4 +1,4 @@
-package org.example.expert.domain.user.entity;
+package org.example.expert.domain.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +11,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.common.entity.Timestamped;
 import org.example.expert.domain.user.enums.AccessLevel;
 
 @Getter

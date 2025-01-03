@@ -1,4 +1,4 @@
-package org.example.expert.domain.manager.entity;
+package org.example.expert.domain.common.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,17 +9,19 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import org.example.expert.domain.todo.entity.Todo;
-import org.example.expert.domain.user.entity.User;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "managers")
-public class Manager {
+@NoArgsConstructor
+@Table(name = "comments")
+public class Comment extends Timestamped {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  private String contents;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(
@@ -35,14 +37,17 @@ public class Manager {
   )
   private Todo todo;
 
-  protected Manager() {
-  }
-
-  public Manager(
+  public Comment(
+      String contents,
       User user,
       Todo todo
   ) {
+    this.contents = contents;
     this.user = user;
     this.todo = todo;
+  }
+
+  public void update(String contents) {
+    this.contents = contents;
   }
 }

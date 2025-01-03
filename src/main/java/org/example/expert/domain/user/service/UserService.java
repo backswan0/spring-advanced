@@ -7,7 +7,7 @@ import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.user.dto.request.UpdatePasswordRequestDto;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
-import org.example.expert.domain.user.entity.User;
+import org.example.expert.domain.common.entity.User;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

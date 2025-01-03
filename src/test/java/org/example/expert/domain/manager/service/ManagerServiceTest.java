@@ -12,13 +12,12 @@ import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.manager.dto.request.CreateManagerRequestDto;
 import org.example.expert.domain.manager.dto.response.CreateManagerResponseDto;
-import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
-import org.example.expert.domain.manager.entity.Manager;
+import org.example.expert.domain.common.entity.Manager;
 import org.example.expert.domain.manager.repository.ManagerRepository;
-import org.example.expert.domain.todo.entity.Todo;
+import org.example.expert.domain.common.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
-import org.example.expert.domain.user.entity.User;
+import org.example.expert.domain.common.entity.User;
 import org.example.expert.domain.user.enums.AccessLevel;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -68,7 +67,7 @@ class ManagerServiceTest {
 
     // when & then
     InvalidRequestException exception = assertThrows(InvalidRequestException.class, () ->
-        managerService.createManager(authUser, todoId, createManagerRequestDto.managerUserId())
+        managerService.createManager(authUser, todoId, createManagerRequestDto)
     );
 
     assertEquals("담당자를 등록하려고 하는 유저가 일정을 만든 유저가 유효하지 않습니다.", exception.getMessage());
@@ -121,14 +120,14 @@ class ManagerServiceTest {
         invocation -> invocation.getArgument(0));
 
     // when
-    Manager manager = managerService.createManager(authUser, todoId,
-        createManagerRequestDto.managerUserId());
+    CreateManagerResponseDto responseDto = managerService.createManager(authUser, todoId,
+        createManagerRequestDto);
 
     CreateManagerResponseDto response = new CreateManagerResponseDto(
-        manager.getId(),
+        responseDto.id(),
         new UserResponseDto(
-            manager.getUser().getId(),
-            manager.getUser().getEmail()
+            responseDto.user().id(),
+            responseDto.user().email()
         )
     );
 

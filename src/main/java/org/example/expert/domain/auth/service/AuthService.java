@@ -9,7 +9,7 @@ import org.example.expert.domain.auth.dto.response.SignInResponseDto;
 import org.example.expert.domain.auth.dto.response.SignUpResponseDto;
 import org.example.expert.domain.auth.exception.AuthException;
 import org.example.expert.domain.common.exception.InvalidRequestException;
-import org.example.expert.domain.user.entity.User;
+import org.example.expert.domain.common.entity.User;
 import org.example.expert.domain.user.enums.AccessLevel;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;

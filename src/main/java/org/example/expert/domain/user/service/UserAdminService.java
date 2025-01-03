@@ -3,7 +3,7 @@ package org.example.expert.domain.user.service;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.config.EntityFinderUtil;
 import org.example.expert.domain.user.dto.request.UpdateAccessLevelRequestDto;
-import org.example.expert.domain.user.entity.User;
+import org.example.expert.domain.common.entity.User;
 import org.example.expert.domain.user.enums.AccessLevel;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;

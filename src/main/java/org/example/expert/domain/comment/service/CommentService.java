@@ -7,13 +7,13 @@ import org.example.expert.config.EntityFinderUtil;
 import org.example.expert.domain.comment.dto.request.CreateCommentRequestDto;
 import org.example.expert.domain.comment.dto.response.CommentResponseDto;
 import org.example.expert.domain.comment.dto.response.CreateCommentResponseDto;
-import org.example.expert.domain.comment.entity.Comment;
+import org.example.expert.domain.common.entity.Comment;
 import org.example.expert.domain.comment.repository.CommentRepository;
 import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.todo.entity.Todo;
+import org.example.expert.domain.common.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
-import org.example.expert.domain.user.entity.User;
+import org.example.expert.domain.common.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

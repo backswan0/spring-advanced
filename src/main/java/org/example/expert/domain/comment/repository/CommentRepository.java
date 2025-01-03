@@ -1,7 +1,7 @@
 package org.example.expert.domain.comment.repository;
 
 import java.util.List;
-import org.example.expert.domain.comment.entity.Comment;
+import org.example.expert.domain.common.entity.Comment;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
