@@ -11,9 +11,7 @@ import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.manager.dto.request.CreateManagerRequestDto;
 import org.example.expert.domain.manager.dto.response.CreateManagerResponseDto;
 import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
-import org.example.expert.domain.manager.entity.Manager;
 import org.example.expert.domain.manager.service.ManagerService;
-import org.example.expert.domain.user.dto.response.UserResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,19 +37,11 @@ public class ManagerController {
       @PathVariable long todoId,
       @Valid @RequestBody CreateManagerRequestDto requestDto
   ) {
-    Manager foundManager = managerService
-        .createManager(
-            authUser,
-            todoId,
-            requestDto.managerUserId()
-        );
 
-    CreateManagerResponseDto responseDto = new CreateManagerResponseDto(
-        foundManager.getId(),
-        new UserResponseDto(
-            foundManager.getUser().getId(),
-            foundManager.getUser().getEmail()
-        )
+    CreateManagerResponseDto responseDto = managerService.createManager(
+        authUser,
+        todoId,
+        requestDto
     );
 
     return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
@@ -62,24 +52,9 @@ public class ManagerController {
       @PathVariable long todoId // todo id 확인 필요
   ) {
 
-    List<Manager> managerList = new ArrayList<>();
-
-    managerList = managerService.readAllManagers(todoId);
-
     List<ManagerResponseDto> managerDtoList = new ArrayList<>();
 
-    managerDtoList = managerList.stream()
-        .map(manager -> {
-              UserResponseDto responseDto = new UserResponseDto(
-                  manager.getUser().getId(),
-                  manager.getUser().getEmail()
-              );
-              return new ManagerResponseDto(
-                  manager.getId(),
-                  responseDto
-              );
-            }
-        ).toList();
+    managerDtoList = managerService.readAllManagers(todoId);
 
     return new ResponseEntity<>(managerDtoList, HttpStatus.OK);
   }
@@ -90,7 +65,9 @@ public class ManagerController {
       @PathVariable long todoId,
       @PathVariable long managerId
   ) {
-    Claims claims = jwtUtil.extractClaims(bearerToken.substring(7));
+    Claims claims = jwtUtil.extractClaims(
+        bearerToken.substring(7)
+    );
 
     long userId = Long.parseLong(claims.getSubject());
 

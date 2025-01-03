@@ -6,10 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.example.expert.config.EntityFinderUtil;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
+import org.example.expert.domain.manager.dto.request.CreateManagerRequestDto;
+import org.example.expert.domain.manager.dto.response.CreateManagerResponseDto;
+import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
 import org.example.expert.domain.manager.entity.Manager;
 import org.example.expert.domain.manager.repository.ManagerRepository;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
+import org.example.expert.domain.user.dto.response.UserResponseDto;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -25,10 +29,10 @@ public class ManagerService {
   private final TodoRepository todoRepository;
 
   @Transactional
-  public Manager createManager(
+  public CreateManagerResponseDto createManager(
       AuthUser authUser,
       long todoId,
-      long userId
+      CreateManagerRequestDto requestDto
   ) {
 
     User userFromAuth = User.fromAuthUser(authUser);
@@ -52,7 +56,7 @@ public class ManagerService {
 
     User foundUser = EntityFinderUtil.findEntityById(
         userRepository,
-        userId,
+        requestDto.managerUserId(),
         User.class
     );
 
@@ -71,13 +75,17 @@ public class ManagerService {
 
     Manager savedManager = managerRepository.save(managerToSave);
 
-    return savedManager;
+    return new CreateManagerResponseDto(
+        savedManager.getId(),
+        new UserResponseDto(
+            savedManager.getUser().getId(),
+            savedManager.getUser().getEmail()
+        )
+    );
   }
 
   @Transactional(readOnly = true)
-  public List<Manager> readAllManagers(
-      long todoId
-  ) {
+  public List<ManagerResponseDto> readAllManagers(long todoId) {
     Todo foundTodo = EntityFinderUtil.findEntityById(
         todoRepository,
         todoId,
@@ -86,10 +94,24 @@ public class ManagerService {
 
     List<Manager> managerList = new ArrayList<>();
 
-    managerList = managerRepository
-        .findAllByTodoId(foundTodo.getId());
+    managerList = managerRepository.findAllByTodoId(foundTodo.getId());
 
-    return managerList;
+    List<ManagerResponseDto> managerDtoList = new ArrayList<>();
+
+    managerDtoList = managerList.stream()
+        .map(manager -> {
+              UserResponseDto responseDto = new UserResponseDto(
+                  manager.getUser().getId(),
+                  manager.getUser().getEmail()
+              );
+              return new ManagerResponseDto(
+                  manager.getId(),
+                  responseDto
+              );
+            }
+        ).toList();
+
+    return managerDtoList;
   }
 
   @Transactional
