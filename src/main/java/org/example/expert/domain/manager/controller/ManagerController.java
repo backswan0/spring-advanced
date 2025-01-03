@@ -59,7 +59,7 @@ public class ManagerController {
 
   @GetMapping
   public ResponseEntity<List<ManagerResponseDto>> readAllManagers(
-      @PathVariable long todoId // todo 이건 왜 있을까??
+      @PathVariable long todoId // todo id 확인 필요
   ) {
 
     List<Manager> managerList = new ArrayList<>();
@@ -85,7 +85,7 @@ public class ManagerController {
   }
 
   @DeleteMapping("/{managerId}")
-  public void deleteManager(
+  public ResponseEntity<Void> deleteManager(
       @RequestHeader("Authorization") String bearerToken,
       @PathVariable long todoId,
       @PathVariable long managerId
@@ -99,5 +99,7 @@ public class ManagerController {
         todoId,
         managerId
     );
+
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

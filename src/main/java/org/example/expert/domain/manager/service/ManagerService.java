@@ -89,38 +89,40 @@ public class ManagerService {
       long todoId,
       long managerId
   ) {
-    User user = userRepository
-        .findById(userId)
+    User foundUser = userRepository.findById(userId)
         .orElseThrow(
-            () -> new InvalidRequestException("User not found")
+            () -> new InvalidRequestException("User is not found")
         );
 
-    Todo todo = todoRepository
-        .findById(todoId)
+    Todo foundTodo = todoRepository.findById(todoId)
         .orElseThrow(
-            () -> new InvalidRequestException("Todo not found")
+            () -> new InvalidRequestException("Todo is not found")
         );
 
-    boolean isInvalidUser =
-        todo.getUser() == null || !ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId());
+    boolean isInvalidUser = foundTodo.getUser() == null
+        || !ObjectUtils.nullSafeEquals(
+        foundUser.getId(),
+        foundTodo.getUser().getId()
+    );
 
     if (isInvalidUser) {
-      throw new InvalidRequestException("해당 일정을 만든 유저가 유효하지 않습니다.");
+      throw new InvalidRequestException("User who created todo is invalid");
     }
 
-    Manager manager = managerRepository
-        .findById(managerId)
+    Manager foundManager = managerRepository.findById(managerId)
         .orElseThrow(
-            () -> new InvalidRequestException("Manager not found")
+            () -> new InvalidRequestException("Manager is not found")
         );
 
-    boolean isManagerMismatch = !ObjectUtils.nullSafeEquals(todo.getId(),
-        manager.getTodo().getId());
+    boolean isManagerMismatch = !ObjectUtils.nullSafeEquals(
+        foundTodo.getId(),
+        foundManager.getTodo().getId()
+    );
 
     if (isManagerMismatch) {
-      throw new InvalidRequestException("해당 일정에 등록된 담당자가 아닙니다.");
+      throw new InvalidRequestException("Manager is not assigned to todo");
     }
 
-    managerRepository.delete(manager);
+    managerRepository.delete(foundManager);
   }
 }
