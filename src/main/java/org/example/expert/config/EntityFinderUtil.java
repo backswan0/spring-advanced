@@ -1,19 +1,20 @@
 package org.example.expert.config;
 
-import java.util.Optional;
 import org.example.expert.domain.common.exception.InvalidRequestException;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public class EntityFinderUtil {
 
-  // todo 레포지토리를 넘겨보도록, 옵셔널 대신에
-  public static <T> T findEntityById(
-      Optional<T> entityOptional,
+  public static <T, ID> T findEntityById(
+      JpaRepository<T, ID> repository,
+      ID id,
       Class<T> entityClass
   ) {
-    return entityOptional.orElseThrow(
-        () -> new InvalidRequestException(
-            getEntityName(entityClass) + " is not found")
-    );
+    return repository.findById(id)
+        .orElseThrow(
+            () -> new InvalidRequestException(
+                getEntityName(entityClass) + " is not found")
+        );
   }
 
   private static <T> String getEntityName(Class<T> entityClass) {

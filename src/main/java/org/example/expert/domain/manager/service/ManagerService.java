@@ -34,7 +34,8 @@ public class ManagerService {
     User userFromAuth = User.fromAuthUser(authUser);
 
     Todo foundTodo = EntityFinderUtil.findEntityById(
-        todoRepository.findById(todoId),
+        todoRepository,
+        todoId,
         Todo.class
     );
 
@@ -50,7 +51,8 @@ public class ManagerService {
     }
 
     User foundUser = EntityFinderUtil.findEntityById(
-        userRepository.findById(userId),
+        userRepository,
+        userId,
         User.class
     );
 
@@ -77,7 +79,8 @@ public class ManagerService {
       long todoId
   ) {
     Todo foundTodo = EntityFinderUtil.findEntityById(
-        todoRepository.findById(todoId),
+        todoRepository,
+        todoId,
         Todo.class
     );
 
@@ -96,12 +99,14 @@ public class ManagerService {
       long managerId
   ) {
     User foundUser = EntityFinderUtil.findEntityById(
-        userRepository.findById(userId),
+        userRepository,
+        userId,
         User.class
     );
 
     Todo foundTodo = EntityFinderUtil.findEntityById(
-        todoRepository.findById(todoId),
+        todoRepository,
+        todoId,
         Todo.class
     );
 
@@ -118,7 +123,8 @@ public class ManagerService {
     }
 
     Manager foundManager = EntityFinderUtil.findEntityById(
-        managerRepository.findById(managerId),
+        managerRepository,
+        managerId,
         Manager.class
     );
 

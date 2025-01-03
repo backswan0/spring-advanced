@@ -20,7 +20,8 @@ public class UserAdminService {
       String accessLevel
   ) {
     User foundUser = EntityFinderUtil.findEntityById(
-        userRepository.findById(userId),
+        userRepository,
+        userId,
         User.class
     );
 

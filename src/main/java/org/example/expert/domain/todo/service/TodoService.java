@@ -57,7 +57,8 @@ public class TodoService {
   public Todo readTodoById(long todoId) {
 
     Todo foundTodo = EntityFinderUtil.findEntityById(
-        todoRepository.findById(todoId),
+        todoRepository,
+        todoId,
         Todo.class
     );
 

@@ -29,7 +29,8 @@ public class CommentService {
     User userFromAuth = User.fromAuthUser(authUser);
 
     Todo foundTodo = EntityFinderUtil.findEntityById(
-        todoRepository.findById(todoId),
+        todoRepository,
+        todoId,
         Todo.class
     );
 

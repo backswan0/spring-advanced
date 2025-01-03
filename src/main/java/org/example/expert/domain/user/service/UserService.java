@@ -21,7 +21,8 @@ public class UserService {
   public User readUserById(long userId) {
 
     User foundUser = EntityFinderUtil.findEntityById(
-        userRepository.findById(userId),
+        userRepository,
+        userId,
         User.class
     );
 
@@ -36,23 +37,30 @@ public class UserService {
   ) {
 
     if (newPassword.length() < 8) {
-      throw new InvalidRequestException("New password must be more than 8");
+      throw new InvalidRequestException(
+          "New password must be more than 8"
+      );
     }
 
     boolean lacksDigit = !newPassword.matches(".*\\d.*");
 
     if (lacksDigit) {
-      throw new InvalidRequestException("New password must include digit");
+      throw new InvalidRequestException(
+          "New password must include digit"
+      );
     }
 
     boolean lacksCapital = !newPassword.matches(".*[A-Z].*");
 
     if (lacksCapital) {
-      throw new InvalidRequestException("New password must include capital letter");
+      throw new InvalidRequestException(
+          "New password must include capital letter"
+      );
     }
 
     User foundUser = EntityFinderUtil.findEntityById(
-        userRepository.findById(userId),
+        userRepository,
+        userId,
         User.class
     );
 
@@ -62,7 +70,9 @@ public class UserService {
     );
 
     if (isPasswordSame) {
-      throw new InvalidRequestException("New password must differ from current password");
+      throw new InvalidRequestException(
+          "New password must differ from current password"
+      );
     }
 
     boolean isPasswordDifferent = !passwordEncoder.matches(
@@ -71,7 +81,9 @@ public class UserService {
     );
 
     if (isPasswordDifferent) {
-      throw new InvalidRequestException("Password does not match");
+      throw new InvalidRequestException(
+          "Password does not match"
+      );
     }
 
     foundUser.updatePassword(passwordEncoder.encode(newPassword));
