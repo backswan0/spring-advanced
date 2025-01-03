@@ -7,10 +7,10 @@ import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.todo.dto.request.CreateTodoRequestDto;
 import org.example.expert.domain.todo.dto.response.CreateTodoResponseDto;
 import org.example.expert.domain.todo.dto.response.TodoResponseDto;
-import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.service.TodoService;
-import org.example.expert.domain.user.dto.response.UserResponseDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,21 +33,9 @@ public class TodoController {
       @Auth AuthUser authUser,
       @Valid @RequestBody CreateTodoRequestDto requestDto
   ) {
-    Todo savedTodo = todoService.createTodo(
+    CreateTodoResponseDto responseDto = todoService.createTodo(
         authUser,
-        requestDto.title(),
-        requestDto.contents()
-    );
-
-    CreateTodoResponseDto responseDto = new CreateTodoResponseDto(
-        savedTodo.getId(),
-        savedTodo.getTitle(),
-        savedTodo.getContents(),
-        savedTodo.getWeather(),
-        new UserResponseDto(
-            savedTodo.getUser().getId(),
-            savedTodo.getUser().getEmail()
-        )
+        requestDto
     );
 
     return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
@@ -58,51 +46,29 @@ public class TodoController {
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size
   ) {
+    Pageable adjustedPageable = PageRequest.of(page - 1, size);
 
-    Page<Todo> todoPage = todoService
-        .readAllTodos(
-            page,
-            size
-        );
+    Page<TodoResponseDto> todoDtoPage = todoService.readAllTodos(adjustedPageable);
 
-    Page<TodoResponseDto> responseDtoPage = todoPage.map(
-        todo -> new TodoResponseDto(
-            todo.getId(),
-            todo.getTitle(),
-            todo.getContents(),
-            todo.getWeather(),
-            new UserResponseDto(
-                todo.getUser().getId(),
-                todo.getUser().getEmail()
-            ),
-            todo.getCreatedAt(),
-            todo.getUpdatedAt()
-        )
-    );
-
-    return new ResponseEntity<>(responseDtoPage, HttpStatus.OK);
+    return new ResponseEntity<>(todoDtoPage, HttpStatus.OK);
   }
 
   @GetMapping("/{todoId}")
   public ResponseEntity<TodoResponseDto> readTodoById(
       @PathVariable long todoId
   ) {
-
-    Todo foundTodo = todoService.readTodoById(todoId);
-
-    TodoResponseDto responseDto = new TodoResponseDto(
-        foundTodo.getId(),
-        foundTodo.getTitle(),
-        foundTodo.getContents(),
-        foundTodo.getWeather(),
-        new UserResponseDto(
-            foundTodo.getUser().getId(),
-            foundTodo.getUser().getEmail()
-        ),
-        foundTodo.getCreatedAt(),
-        foundTodo.getUpdatedAt()
-    );
+    TodoResponseDto responseDto = todoService.readTodoById(todoId);
 
     return new ResponseEntity<>(responseDto, HttpStatus.OK);
   }
 }
+
+/*
+계층을 이동할 때 사용하는 dto
+컨트롤러에서 엔티티를 가져버리면 계층 이동이 필요한가? dto를 사용하는 의미가 없어진다.
+외부에서 들어온 값이 유효한지 검증 + 가공
+request dto를 전달만 하자. dto에서 무엇을 쓸지는 서비스의 역할
+
+Pageable adjustedPageable = PageRequest.of(page - 1, size);
+-> 컨트롤러에 있어야 한다. 외부에서 들어온 값을 전처리해주는 단계니까
+ */
