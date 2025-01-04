@@ -10,14 +10,14 @@ import static org.mockito.BDDMockito.given;
 import java.util.Optional;
 import org.example.expert.domain.comment.dto.request.CreateCommentRequestDto;
 import org.example.expert.domain.comment.dto.response.CreateCommentResponseDto;
-import org.example.expert.domain.common.entity.Comment;
 import org.example.expert.domain.comment.repository.CommentRepository;
 import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.common.exception.ServerException;
+import org.example.expert.domain.common.entity.Comment;
 import org.example.expert.domain.common.entity.Todo;
+import org.example.expert.domain.common.entity.User;
+import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
-import org.example.expert.domain.common.entity.User;
 import org.example.expert.domain.user.enums.AccessLevel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,18 +39,29 @@ class CommentServiceTest {
   public void comment_등록_중_할일을_찾지_못해_에러가_발생한다() {
     // given
     long todoId = 1;
-    CreateCommentRequestDto request = new CreateCommentRequestDto("contents");
-    AuthUser authUser = new AuthUser(1L, "email", AccessLevel.USER);
+    CreateCommentRequestDto requestDto = new CreateCommentRequestDto("contents");
+    AuthUser authUser = new AuthUser(
+        1L,
+        "email",
+        AccessLevel.USER
+    );
 
-    given(todoRepository.findById(anyLong())).willReturn(Optional.empty());
+    given(todoRepository.findById(anyLong()))
+        .willReturn(Optional.empty());
 
     // when
-    ServerException exception = assertThrows(ServerException.class, () -> {
-      commentService.createComment(authUser, todoId, request);
-    });
+    InvalidRequestException exception = assertThrows(InvalidRequestException.class,
+        () -> {
+          commentService.createComment(
+              authUser,
+              todoId,
+              requestDto
+          );
+        }
+    );
 
     // then
-    assertEquals("Todo not found", exception.getMessage());
+    assertEquals("Todo is not found", exception.getMessage());
   }
 
   @Test
