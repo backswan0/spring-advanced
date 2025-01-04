@@ -3,20 +3,16 @@ package org.example.expert.common.config;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.expert.common.enums.AccessLevel;
 import org.example.expert.common.jwt.JwtUtil;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
-public class AuthenticationInterceptor implements HandlerInterceptor {
+public class AdminInterceptor implements HandlerInterceptor {
 
   private final JwtUtil jwt;
   private final UserRepository userRepository;
@@ -59,17 +55,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
       return false;
     }
 
-    // 로그 기록 시 마이크로초 제거
-    LocalDateTime now = LocalDateTime.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-    String formattedDate = now.format(formatter);
-
-
-    log.info(
-        "Admin access: URL = {}, Time: {}",
-        request.getRequestURL(),
-        formattedDate
-    );
+    AdminLogger.log(request.getRequestURL().toString());
 
     return true;
   }

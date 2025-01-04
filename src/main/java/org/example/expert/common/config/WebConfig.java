@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-  private final AuthenticationInterceptor authenticationInterceptor;
+  private final AdminInterceptor adminInterceptor;
 
   // ArgumentResolver 등록
   @Override
@@ -24,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
   // Interceptor 등록
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(authenticationInterceptor)
+    registry.addInterceptor(adminInterceptor)
         .addPathPatterns("/admin/**");
   }
 }
