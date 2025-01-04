@@ -42,6 +42,7 @@ class PasswordEncoderTest {
         encodedPassword
     );
 
+    // then
     assertFalse(mismatches);
   }
 }
