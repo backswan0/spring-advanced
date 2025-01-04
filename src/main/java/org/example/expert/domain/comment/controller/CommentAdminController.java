@@ -1,6 +1,9 @@
 package org.example.expert.domain.comment.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.expert.common.annotation.Auth;
+import org.example.expert.common.enums.AccessLevel;
+import org.example.expert.domain.auth.dto.AuthUserDto;
 import org.example.expert.domain.comment.service.CommentAdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +19,17 @@ public class CommentAdminController {
 
   @DeleteMapping("/admin/comments/{commentId}")
   public ResponseEntity<Void> deleteComment(
-      // todo 삭제할 권한 검증 시 @Auth AuthUser authUser 사용 필요
+      @Auth AuthUserDto authUserDto,
       @PathVariable long commentId
   ) {
-    // todo 삭제할 권한이 있는지 검증 필요
+
+    boolean isNotAdminUser = !authUserDto.accessLevel().
+        equals(AccessLevel.ADMIN);
+
+    if (isNotAdminUser) {
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
     commentAdminService.deleteComment(commentId);
 
     return new ResponseEntity<>(HttpStatus.OK);
