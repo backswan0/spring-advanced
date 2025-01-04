@@ -1,4 +1,4 @@
-package org.example.expert.domain.common.entity;
+package org.example.expert.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,8 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.user.enums.AccessLevel;
+import org.example.expert.common.enums.AccessLevel;
+import org.example.expert.domain.auth.dto.AuthUserDto;
 
 @Getter
 @Entity
@@ -52,12 +52,12 @@ public class User extends Timestamped {
   }
 
   public static User fromAuthUser(
-      AuthUser authUser
+      AuthUserDto authUserDto
   ) {
     return new User(
-        authUser.id(),
-        authUser.email(),
-        authUser.accessLevel()
+        authUserDto.id(),
+        authUserDto.email(),
+        authUserDto.accessLevel()
     );
   }
 

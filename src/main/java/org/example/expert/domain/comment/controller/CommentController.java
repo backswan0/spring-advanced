@@ -4,12 +4,12 @@ import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.example.expert.common.annotation.Auth;
+import org.example.expert.domain.auth.dto.AuthUserDto;
 import org.example.expert.domain.comment.dto.request.CreateCommentRequestDto;
 import org.example.expert.domain.comment.dto.response.CommentResponseDto;
 import org.example.expert.domain.comment.dto.response.CreateCommentResponseDto;
 import org.example.expert.domain.comment.service.CommentService;
-import org.example.expert.domain.common.annotation.Auth;
-import org.example.expert.domain.common.dto.AuthUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,12 +28,12 @@ public class CommentController {
 
   @PostMapping
   public ResponseEntity<CreateCommentResponseDto> createComment(
-      @Auth AuthUser authUser,
+      @Auth AuthUserDto authUserDto,
       @PathVariable long todoId,
       @Valid @RequestBody CreateCommentRequestDto requestDto
   ) {
     CreateCommentResponseDto savedComment = commentService.createComment(
-        authUser,
+        authUserDto,
         todoId,
         requestDto
     );

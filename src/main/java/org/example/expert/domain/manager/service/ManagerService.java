@@ -3,12 +3,12 @@ package org.example.expert.domain.manager.service;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.example.expert.config.EntityFinderUtil;
-import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.common.entity.Manager;
-import org.example.expert.domain.common.entity.Todo;
-import org.example.expert.domain.common.entity.User;
-import org.example.expert.domain.common.exception.InvalidRequestException;
+import org.example.expert.common.entity.Manager;
+import org.example.expert.common.entity.Todo;
+import org.example.expert.common.entity.User;
+import org.example.expert.common.exception.InvalidRequestException;
+import org.example.expert.common.util.EntityFinderUtil;
+import org.example.expert.domain.auth.dto.AuthUserDto;
 import org.example.expert.domain.manager.dto.request.CreateManagerRequestDto;
 import org.example.expert.domain.manager.dto.response.CreateManagerResponseDto;
 import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
@@ -30,12 +30,12 @@ public class ManagerService {
 
   @Transactional
   public CreateManagerResponseDto createManager(
-      AuthUser authUser,
+      AuthUserDto authUserDto,
       long todoId,
       CreateManagerRequestDto requestDto
   ) {
 
-    User userFromAuth = User.fromAuthUser(authUser);
+    User userFromAuth = User.fromAuthUser(authUserDto);
 
     Todo foundTodo = EntityFinderUtil.findEntityById(
         todoRepository,

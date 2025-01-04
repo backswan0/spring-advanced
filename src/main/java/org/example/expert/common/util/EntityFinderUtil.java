@@ -1,6 +1,6 @@
-package org.example.expert.config;
+package org.example.expert.common.util;
 
-import org.example.expert.domain.common.exception.InvalidRequestException;
+import org.example.expert.common.exception.InvalidRequestException;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public class EntityFinderUtil {

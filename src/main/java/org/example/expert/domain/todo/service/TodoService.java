@@ -1,16 +1,16 @@
 package org.example.expert.domain.todo.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.expert.client.WeatherClient;
-import org.example.expert.config.EntityFinderUtil;
-import org.example.expert.domain.common.dto.AuthUser;
+import org.example.expert.common.entity.Todo;
+import org.example.expert.common.entity.User;
+import org.example.expert.common.util.EntityFinderUtil;
+import org.example.expert.common.weather.WeatherClient;
+import org.example.expert.domain.auth.dto.AuthUserDto;
 import org.example.expert.domain.todo.dto.request.CreateTodoRequestDto;
 import org.example.expert.domain.todo.dto.response.CreateTodoResponseDto;
 import org.example.expert.domain.todo.dto.response.TodoResponseDto;
-import org.example.expert.domain.common.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
-import org.example.expert.domain.common.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,10 +25,10 @@ public class TodoService {
 
   @Transactional
   public CreateTodoResponseDto createTodo(
-      AuthUser authUser,
+      AuthUserDto authUserDto,
       CreateTodoRequestDto requestDto
   ) {
-    User userFromAuth = User.fromAuthUser(authUser);
+    User userFromAuth = User.fromAuthUser(authUserDto);
 
     String foundWeather = weatherClient.getTodayWeather();
 

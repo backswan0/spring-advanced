@@ -11,14 +11,14 @@ import java.util.Optional;
 import org.example.expert.domain.comment.dto.request.CreateCommentRequestDto;
 import org.example.expert.domain.comment.dto.response.CreateCommentResponseDto;
 import org.example.expert.domain.comment.repository.CommentRepository;
-import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.common.entity.Comment;
-import org.example.expert.domain.common.entity.Todo;
-import org.example.expert.domain.common.entity.User;
-import org.example.expert.domain.common.exception.InvalidRequestException;
+import org.example.expert.domain.auth.dto.AuthUserDto;
+import org.example.expert.common.entity.Comment;
+import org.example.expert.common.entity.Todo;
+import org.example.expert.common.entity.User;
+import org.example.expert.common.exception.InvalidRequestException;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
-import org.example.expert.domain.user.enums.AccessLevel;
+import org.example.expert.common.enums.AccessLevel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,7 +40,7 @@ class CommentServiceTest {
     // given
     long todoId = 1;
     CreateCommentRequestDto requestDto = new CreateCommentRequestDto("contents");
-    AuthUser authUser = new AuthUser(
+    AuthUserDto authUserDto = new AuthUserDto(
         1L,
         "email",
         AccessLevel.USER
@@ -53,7 +53,7 @@ class CommentServiceTest {
     InvalidRequestException exception = assertThrows(InvalidRequestException.class,
         () -> {
           commentService.createComment(
-              authUser,
+              authUserDto,
               todoId,
               requestDto
           );
@@ -69,8 +69,8 @@ class CommentServiceTest {
     // given
     long todoId = 1;
     CreateCommentRequestDto request = new CreateCommentRequestDto("contents");
-    AuthUser authUser = new AuthUser(1L, "email", AccessLevel.USER);
-    User user = User.fromAuthUser(authUser);
+    AuthUserDto authUserDto = new AuthUserDto(1L, "email", AccessLevel.USER);
+    User user = User.fromAuthUser(authUserDto);
     Todo todo = new Todo("title", "title", "contents", user);
     Comment comment = new Comment(request.contents(), user, todo);
 
@@ -78,7 +78,7 @@ class CommentServiceTest {
     given(commentRepository.save(any())).willReturn(comment);
 
     // when
-    CreateCommentResponseDto result = commentService.createComment(authUser, todoId, request);
+    CreateCommentResponseDto result = commentService.createComment(authUserDto, todoId, request);
 
     CreateCommentResponseDto responseDto = new CreateCommentResponseDto(
         result.id(),

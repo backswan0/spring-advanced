@@ -3,17 +3,17 @@ package org.example.expert.domain.comment.service;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.example.expert.config.EntityFinderUtil;
+import org.example.expert.common.entity.Comment;
+import org.example.expert.common.entity.Todo;
+import org.example.expert.common.entity.User;
+import org.example.expert.common.util.EntityFinderUtil;
+import org.example.expert.domain.auth.dto.AuthUserDto;
 import org.example.expert.domain.comment.dto.request.CreateCommentRequestDto;
 import org.example.expert.domain.comment.dto.response.CommentResponseDto;
 import org.example.expert.domain.comment.dto.response.CreateCommentResponseDto;
-import org.example.expert.domain.common.entity.Comment;
 import org.example.expert.domain.comment.repository.CommentRepository;
-import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.common.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
-import org.example.expert.domain.common.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +26,11 @@ public class CommentService {
 
   @Transactional
   public CreateCommentResponseDto createComment(
-      AuthUser authUser,
+      AuthUserDto authUserDto,
       long todoId,
       CreateCommentRequestDto requestDto
   ) {
-    User userFromAuth = User.fromAuthUser(authUser);
+    User userFromAuth = User.fromAuthUser(authUserDto);
 
     Todo foundTodo = EntityFinderUtil.findEntityById(
         todoRepository,

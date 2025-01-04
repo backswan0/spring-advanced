@@ -8,18 +8,18 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import java.util.Optional;
-import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.common.entity.Manager;
-import org.example.expert.domain.common.entity.Todo;
-import org.example.expert.domain.common.entity.User;
-import org.example.expert.domain.common.exception.InvalidRequestException;
+import org.example.expert.domain.auth.dto.AuthUserDto;
+import org.example.expert.common.entity.Manager;
+import org.example.expert.common.entity.Todo;
+import org.example.expert.common.entity.User;
+import org.example.expert.common.exception.InvalidRequestException;
 import org.example.expert.domain.manager.dto.request.CreateManagerRequestDto;
 import org.example.expert.domain.manager.dto.response.CreateManagerResponseDto;
 import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
 import org.example.expert.domain.manager.repository.ManagerRepository;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
-import org.example.expert.domain.user.enums.AccessLevel;
+import org.example.expert.common.enums.AccessLevel;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,7 +59,7 @@ class ManagerServiceTest {
   @Test
   void todo의_user가_null인_경우_예외가_발생한다() {
     // given
-    AuthUser authUser = new AuthUser(
+    AuthUserDto authUserDto = new AuthUserDto(
         1L,
         "a@a.com",
         AccessLevel.USER
@@ -85,7 +85,7 @@ class ManagerServiceTest {
     // when
     InvalidRequestException exception = assertThrows(InvalidRequestException.class,
         () -> managerService.createManager(
-            authUser,
+            authUserDto,
             todoId,
             requestDto
         )
@@ -126,8 +126,8 @@ class ManagerServiceTest {
     // 테스트코드 샘플
   void todo가_정상적으로_등록된다() {
     // given
-    AuthUser authUser = new AuthUser(1L, "a@a.com", AccessLevel.USER);
-    User user = User.fromAuthUser(authUser);  // 일정을 만든 유저
+    AuthUserDto authUserDto = new AuthUserDto(1L, "a@a.com", AccessLevel.USER);
+    User user = User.fromAuthUser(authUserDto);  // 일정을 만든 유저
 
     long todoId = 1L;
     Todo todo = new Todo("Test Title", "Test Contents", "Sunny", user);
@@ -145,7 +145,7 @@ class ManagerServiceTest {
         invocation -> invocation.getArgument(0));
 
     // when
-    CreateManagerResponseDto responseDto = managerService.createManager(authUser, todoId,
+    CreateManagerResponseDto responseDto = managerService.createManager(authUserDto, todoId,
         createManagerRequestDto);
 
     CreateManagerResponseDto response = new CreateManagerResponseDto(

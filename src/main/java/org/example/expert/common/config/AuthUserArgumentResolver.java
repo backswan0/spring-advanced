@@ -1,10 +1,10 @@
-package org.example.expert.config;
+package org.example.expert.common.config;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.expert.common.annotation.Auth;
+import org.example.expert.common.enums.AccessLevel;
+import org.example.expert.domain.auth.dto.AuthUserDto;
 import org.example.expert.domain.auth.exception.AuthException;
-import org.example.expert.domain.common.annotation.Auth;
-import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.user.enums.AccessLevel;
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -20,7 +20,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
         .getParameterAnnotation(Auth.class) != null;
 
     boolean isAuthUserType = parameter.getParameterType()
-        .equals(AuthUser.class);
+        .equals(AuthUserDto.class);
 
     // @Auth 어노테이션과 AuthUser 타입이 함께 사용되지 않으면 예외 발생
     boolean isAuthTypeMismatch = hasAuthAnnotation != isAuthUserType;
@@ -50,6 +50,6 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
     AccessLevel accessLevel = AccessLevel.of((String) request
         .getAttribute("userRole"));
 
-    return new AuthUser(userId, email, accessLevel);
+    return new AuthUserDto(userId, email, accessLevel);
   }
 }

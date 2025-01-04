@@ -5,9 +5,9 @@ import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.example.expert.config.JwtUtil;
-import org.example.expert.domain.common.annotation.Auth;
-import org.example.expert.domain.common.dto.AuthUser;
+import org.example.expert.common.annotation.Auth;
+import org.example.expert.common.jwt.JwtUtil;
+import org.example.expert.domain.auth.dto.AuthUserDto;
 import org.example.expert.domain.manager.dto.request.CreateManagerRequestDto;
 import org.example.expert.domain.manager.dto.response.CreateManagerResponseDto;
 import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
@@ -33,13 +33,13 @@ public class ManagerController {
 
   @PostMapping
   public ResponseEntity<CreateManagerResponseDto> createManager(
-      @Auth AuthUser authUser,
+      @Auth AuthUserDto authUserDto,
       @PathVariable long todoId,
       @Valid @RequestBody CreateManagerRequestDto requestDto
   ) {
 
     CreateManagerResponseDto responseDto = managerService.createManager(
-        authUser,
+        authUserDto,
         todoId,
         requestDto
     );

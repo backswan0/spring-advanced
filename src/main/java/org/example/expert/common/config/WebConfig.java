@@ -1,4 +1,4 @@
-package org.example.expert.config;
+package org.example.expert.common.config;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

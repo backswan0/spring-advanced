@@ -1,16 +1,16 @@
 package org.example.expert.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.expert.config.JwtUtil;
-import org.example.expert.config.PasswordEncoder;
+import org.example.expert.common.config.PasswordEncoder;
+import org.example.expert.common.entity.User;
+import org.example.expert.common.enums.AccessLevel;
+import org.example.expert.common.exception.InvalidRequestException;
+import org.example.expert.common.jwt.JwtUtil;
 import org.example.expert.domain.auth.dto.request.SignInRequestDto;
 import org.example.expert.domain.auth.dto.request.SignUpRequestDto;
 import org.example.expert.domain.auth.dto.response.SignInResponseDto;
 import org.example.expert.domain.auth.dto.response.SignUpResponseDto;
 import org.example.expert.domain.auth.exception.AuthException;
-import org.example.expert.domain.common.exception.InvalidRequestException;
-import org.example.expert.domain.common.entity.User;
-import org.example.expert.domain.user.enums.AccessLevel;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

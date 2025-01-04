@@ -1,13 +1,13 @@
 package org.example.expert.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.expert.config.EntityFinderUtil;
-import org.example.expert.config.PasswordEncoder;
-import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.common.exception.InvalidRequestException;
+import org.example.expert.common.config.PasswordEncoder;
+import org.example.expert.common.entity.User;
+import org.example.expert.common.exception.InvalidRequestException;
+import org.example.expert.common.util.EntityFinderUtil;
+import org.example.expert.domain.auth.dto.AuthUserDto;
 import org.example.expert.domain.user.dto.request.UpdatePasswordRequestDto;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
-import org.example.expert.domain.common.entity.User;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +37,7 @@ public class UserService {
 
   @Transactional
   public void updatePassword(
-      AuthUser authUser,
+      AuthUserDto authUserDto,
       UpdatePasswordRequestDto requestDto
   ) {
 
@@ -65,7 +65,7 @@ public class UserService {
 
     User foundUser = EntityFinderUtil.findEntityById(
         userRepository,
-        authUser.id(),
+        authUserDto.id(),
         User.class
     );
 

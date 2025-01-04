@@ -1,8 +1,8 @@
 package org.example.expert.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.expert.domain.common.annotation.Auth;
-import org.example.expert.domain.common.dto.AuthUser;
+import org.example.expert.common.annotation.Auth;
+import org.example.expert.domain.auth.dto.AuthUserDto;
 import org.example.expert.domain.user.dto.request.UpdatePasswordRequestDto;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
 import org.example.expert.domain.user.service.UserService;
@@ -33,11 +33,11 @@ public class UserController {
 
   @PutMapping
   public ResponseEntity<Void> updatePassword(
-      @Auth AuthUser authUser,
+      @Auth AuthUserDto authUserDto,
       @RequestBody UpdatePasswordRequestDto requestDto
   ) {
     userService.updatePassword(
-        authUser,
+        authUserDto,
         requestDto
     );
 
