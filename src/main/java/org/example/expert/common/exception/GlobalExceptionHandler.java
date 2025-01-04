@@ -1,9 +1,7 @@
-package org.example.expert.common.config;
+package org.example.expert.common.exception;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.example.expert.common.exception.InvalidRequestException;
-import org.example.expert.common.exception.ServerException;
 import org.example.expert.domain.auth.exception.AuthException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +32,14 @@ public class GlobalExceptionHandler {
       ServerException ex
   ) {
     HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+    return getErrorResponse(status, ex.getMessage());
+  }
+
+  @ExceptionHandler(ForbiddenException.class)
+  public ResponseEntity<Map<String, Object>> handleForbiddenException(
+      ForbiddenException ex
+  ) {
+    HttpStatus status = HttpStatus.FORBIDDEN;
     return getErrorResponse(status, ex.getMessage());
   }
 

@@ -15,7 +15,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.expert.common.enums.AccessLevel;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -68,10 +67,6 @@ public class JwtFilter implements Filter {
         return;
       }
 
-      AccessLevel accessLevel = AccessLevel.valueOf(
-          claims.get("accessLevel", String.class)
-      );
-
       httpRequest.setAttribute(
           "userId",
           Long.parseLong(claims.getSubject())
@@ -84,19 +79,6 @@ public class JwtFilter implements Filter {
           "userRole",
           claims.get("accessLevel")
       );
-
-      if (url.startsWith("/admin")) {
-        // 관리자 권한이 없으면 403 반환
-        if (!AccessLevel.ADMIN.equals(accessLevel)) {
-          httpResponse.sendError(
-              HttpServletResponse.SC_FORBIDDEN,
-              "Admin authority is required"
-          );
-          return;
-        }
-        chain.doFilter(request, response);
-        return;
-      }
 
       chain.doFilter(request, response);
     } catch (SecurityException | MalformedJwtException e) {
