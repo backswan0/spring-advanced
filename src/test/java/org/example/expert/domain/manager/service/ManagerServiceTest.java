@@ -59,23 +59,43 @@ class ManagerServiceTest {
   @Test
   void todo의_user가_null인_경우_예외가_발생한다() {
     // given
-    AuthUser authUser = new AuthUser(1L, "a@a.com", AccessLevel.USER);
-    long todoId = 1L;
-    long managerUserId = 2L;
-
-    Todo todo = new Todo();
-    ReflectionTestUtils.setField(todo, "user", null);
-
-    CreateManagerRequestDto createManagerRequestDto = new CreateManagerRequestDto(managerUserId);
-
-    given(todoRepository.findById(todoId)).willReturn(Optional.of(todo));
-
-    // when & then
-    InvalidRequestException exception = assertThrows(InvalidRequestException.class, () ->
-        managerService.createManager(authUser, todoId, createManagerRequestDto)
+    AuthUser authUser = new AuthUser(
+        1L,
+        "a@a.com",
+        AccessLevel.USER
     );
 
-    assertEquals("담당자를 등록하려고 하는 유저가 일정을 만든 유저가 유효하지 않습니다.", exception.getMessage());
+    long todoId = 1L;
+    long managerId = 2L;
+
+    Todo todo = new Todo();
+
+    ReflectionTestUtils.setField(
+        todo,
+        "user",
+        null
+    );
+
+    CreateManagerRequestDto requestDto = new CreateManagerRequestDto(managerId);
+
+    given(todoRepository.findById(todoId)).
+        willReturn(Optional.of(todo)
+        );
+
+    // when
+    InvalidRequestException exception = assertThrows(InvalidRequestException.class,
+        () -> managerService.createManager(
+            authUser,
+            todoId,
+            requestDto
+        )
+    );
+
+    // then
+    assertEquals(
+        "User who created todo is invalid",
+        exception.getMessage()
+    );
   }
 
   @Test // 테스트코드 샘플

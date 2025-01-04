@@ -5,16 +5,16 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.config.EntityFinderUtil;
 import org.example.expert.domain.common.dto.AuthUser;
+import org.example.expert.domain.common.entity.Manager;
+import org.example.expert.domain.common.entity.Todo;
+import org.example.expert.domain.common.entity.User;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.manager.dto.request.CreateManagerRequestDto;
 import org.example.expert.domain.manager.dto.response.CreateManagerResponseDto;
 import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
-import org.example.expert.domain.common.entity.Manager;
 import org.example.expert.domain.manager.repository.ManagerRepository;
-import org.example.expert.domain.common.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
-import org.example.expert.domain.common.entity.User;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +42,12 @@ public class ManagerService {
         todoId,
         Todo.class
     );
+
+    if (foundTodo.getUser() == null) {
+      throw new InvalidRequestException(
+          "User who created todo is invalid"
+      );
+    }
 
     boolean isUserInvalid = !ObjectUtils.nullSafeEquals(
         userFromAuth.getId(),
