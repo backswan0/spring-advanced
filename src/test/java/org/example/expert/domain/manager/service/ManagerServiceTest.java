@@ -9,15 +9,16 @@ import static org.mockito.BDDMockito.given;
 import java.util.List;
 import java.util.Optional;
 import org.example.expert.domain.common.dto.AuthUser;
+import org.example.expert.domain.common.entity.Manager;
+import org.example.expert.domain.common.entity.Todo;
+import org.example.expert.domain.common.entity.User;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.manager.dto.request.CreateManagerRequestDto;
 import org.example.expert.domain.manager.dto.response.CreateManagerResponseDto;
-import org.example.expert.domain.common.entity.Manager;
+import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
 import org.example.expert.domain.manager.repository.ManagerRepository;
-import org.example.expert.domain.common.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponseDto;
-import org.example.expert.domain.common.entity.User;
 import org.example.expert.domain.user.enums.AccessLevel;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -30,25 +31,29 @@ import org.springframework.test.util.ReflectionTestUtils;
 @ExtendWith(MockitoExtension.class)
 class ManagerServiceTest {
 
+  @InjectMocks
+  private ManagerService managerService;
+
   @Mock
   private ManagerRepository managerRepository;
   @Mock
   private UserRepository userRepository;
   @Mock
   private TodoRepository todoRepository;
-  @InjectMocks
-  private ManagerService managerService;
+
 
   @Test
-  public void manager_목록_조회_시_Todo가_없다면_NPE_에러를_던진다() {
+  public void manager_목록_조회_시_Todo가_없다면_InvalidRequestException_에러를_던진다() {
     // given
     long todoId = 1L;
     given(todoRepository.findById(todoId)).willReturn(Optional.empty());
 
-    // when & then
+    // when
     InvalidRequestException exception = assertThrows(InvalidRequestException.class,
         () -> managerService.readAllManagers(todoId));
-    assertEquals("Manager not found", exception.getMessage());
+
+    // then
+    assertEquals("Todo is not found", exception.getMessage());
   }
 
   @Test
@@ -89,12 +94,12 @@ class ManagerServiceTest {
 
     // when
 
-//    List<ManagerResponseDto> managerResponsDtos = managerService.readAllManagers(todoId);
+    List<ManagerResponseDto> managerResponsDtos = managerService.readAllManagers(todoId);
 
-//    // then
-//    assertEquals(1, managerResponsDtos.size());
-//    assertEquals(mockManager.getId(), managerResponsDtos.get(0).id());
-//    assertEquals(mockManager.getUser().getEmail(), managerResponsDtos.get(0).user().email());
+    // then
+    assertEquals(1, managerResponsDtos.size());
+    assertEquals(mockManager.getId(), managerResponsDtos.get(0).id());
+    assertEquals(mockManager.getUser().getEmail(), managerResponsDtos.get(0).user().email());
   }
 
   @Test
