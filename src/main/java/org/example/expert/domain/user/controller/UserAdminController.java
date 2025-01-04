@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserAdminController {
 
+  // interceptor 적용 확인
   private final UserAdminService userAdminService;
 
   @PatchMapping("/admin/users/{userId}")
