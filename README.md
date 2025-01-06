@@ -21,7 +21,6 @@
 ## 🔗 ERD
 ```mermaid
 erDiagram
-erDiagram
     USERS {
         bigint id
         datetime created_at
