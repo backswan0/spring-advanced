@@ -55,27 +55,11 @@ erDiagram
         bigint user_id
     }
 
-    RECURRING_TODOS {
-        bigint id
-        datetime created_at
-        datetime started_at
-        datetime ended_at
-        datetime updated_at
-        bigint user_id
-        varchar contents
-        varchar frequency
-        varchar title
-        varchar weather
-        enum day_of_week
-    }
-
     USERS ||--o| TODOS : "user_id"
     USERS ||--o| COMMENTS : "user_id"
-    USERS ||--o| RECURRING_TODOS : "user_id"
     USERS ||--o| MANAGERS : "user_id"
     TODOS ||--o| COMMENTS : "todo_id"
     TODOS ||--o| MANAGERS : "todo_id"
-    RECURRING_TODOS ||--o| USERS : "user_id"
 ```
 
 ## 📜 API Specification
@@ -84,7 +68,6 @@ erDiagram
 - Base URL for User: /users
 - Base URL for Admin Users: /admin/users
 - Base URL for Todos: /todos 
-- Base URL for Recurring Todos: /recurring-todos
 - Base URL for Admin Comments: /admin/comments/{commentId}
 - Base URL for Managers: /todos/{todoId}/managers
 - Response Format: JSON
@@ -467,7 +450,7 @@ CREATE TABLE managers
 ```
 
 ## 🚀 Key Features
-- Implements CRUD functionality for `users`, `todos`, `recurring todos`, `comments` and `managers`.
+- Implements CRUD functionality for `users`, `todos`, `comments` and `managers`.
 - Stores data in an SQL database using JPA.
 - Supports pagination: By default, 10 items per page for retrieving the todo list.
 - Implements exception handling.
