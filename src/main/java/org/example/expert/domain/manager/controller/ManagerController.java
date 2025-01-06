@@ -49,7 +49,7 @@ public class ManagerController {
 
   @GetMapping
   public ResponseEntity<List<ManagerResponseDto>> readAllManagers(
-      @PathVariable long todoId // todo id 확인 필요
+      @PathVariable long todoId
   ) {
 
     List<ManagerResponseDto> managerDtoList = new ArrayList<>();

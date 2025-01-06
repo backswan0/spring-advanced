@@ -30,8 +30,11 @@ public class CommentService {
       long todoId,
       CreateCommentRequestDto requestDto
   ) {
+
+    // 인증된 사용자 정보에서 User 객체를 생성
     User userFromAuth = User.fromAuthUser(authUserDto);
 
+    // todoId를 이용해 해당 엔티티 조회 (예외 처리 포함)
     Todo foundTodo = EntityFinderUtil.findEntityById(
         todoRepository,
         todoId,
@@ -66,6 +69,7 @@ public class CommentService {
 
     commentDtoList = commentList.stream()
         .map(comment -> {
+              // 댓글 작성자의 정보를 UserResponseDto로 변환
               UserResponseDto responseDto = new UserResponseDto(
                   comment.getUser().getId(),
                   comment.getUser().getEmail()

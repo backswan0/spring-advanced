@@ -7,8 +7,7 @@ import org.springframework.stereotype.Component;
 public class PasswordEncoder {
 
   public String encode(String rawPassword) {
-    return BCrypt
-        .withDefaults()
+    return BCrypt.withDefaults()
         .hashToString(
             BCrypt.MIN_COST,
             rawPassword.toCharArray()
@@ -19,8 +18,7 @@ public class PasswordEncoder {
       String rawPassword,
       String encodedPassword
   ) {
-    BCrypt.Result result = BCrypt
-        .verifyer()
+    BCrypt.Result result = BCrypt.verifyer()
         .verify(
             rawPassword.toCharArray(),
             encodedPassword

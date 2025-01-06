@@ -26,6 +26,7 @@ public class UserAdminService {
         User.class
     );
 
+    // 요청된 access level을 적용하여 권한 변경
     foundUser.updateAccessLevel(
         AccessLevel.of(
             requestDto.accessLevel()

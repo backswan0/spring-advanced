@@ -6,6 +6,7 @@ import org.example.expert.common.entity.User;
 import org.example.expert.common.util.EntityFinderUtil;
 import org.example.expert.common.weather.WeatherClient;
 import org.example.expert.domain.auth.dto.AuthUserDto;
+import org.example.expert.domain.recurring.repository.RecurringTodoRepository;
 import org.example.expert.domain.todo.dto.request.CreateTodoRequestDto;
 import org.example.expert.domain.todo.dto.response.CreateTodoResponseDto;
 import org.example.expert.domain.todo.dto.response.TodoResponseDto;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TodoService {
 
   private final TodoRepository todoRepository;
+  private final RecurringTodoRepository recurringTodoRepository;
   private final WeatherClient weatherClient;
 
   @Transactional

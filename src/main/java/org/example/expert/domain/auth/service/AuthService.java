@@ -73,6 +73,7 @@ public class AuthService {
       throw new AuthException("Password does not match");
     }
 
+    // JWT 토큰 생성
     String token = jwtUtil.createToken(
         foundUser.getId(),
         foundUser.getEmail(),

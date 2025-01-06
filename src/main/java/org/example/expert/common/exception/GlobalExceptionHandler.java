@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+  // 처리: 잘못된 요청에 대한 예외 (404 Not Found)
   @ExceptionHandler(InvalidRequestException.class)
   public ResponseEntity<Map<String, Object>> invalidRequestExceptionException(
       InvalidRequestException ex
@@ -19,6 +20,7 @@ public class GlobalExceptionHandler {
     return getErrorResponse(status, ex.getMessage());
   }
 
+  // 처리: 인증 관련 예외 (401 Unauthorized)
   @ExceptionHandler(AuthException.class)
   public ResponseEntity<Map<String, Object>> handleAuthException(
       AuthException ex
@@ -27,6 +29,7 @@ public class GlobalExceptionHandler {
     return getErrorResponse(status, ex.getMessage());
   }
 
+  // 처리: 서버 예외 (500 Internal Server Error)
   @ExceptionHandler(ServerException.class)
   public ResponseEntity<Map<String, Object>> handleServerException(
       ServerException ex
@@ -35,6 +38,7 @@ public class GlobalExceptionHandler {
     return getErrorResponse(status, ex.getMessage());
   }
 
+  // 처리: 접근 금지 예외 (403 Forbidden)
   @ExceptionHandler(ForbiddenException.class)
   public ResponseEntity<Map<String, Object>> handleForbiddenException(
       ForbiddenException ex
@@ -43,6 +47,7 @@ public class GlobalExceptionHandler {
     return getErrorResponse(status, ex.getMessage());
   }
 
+  // 에러 응답을 생성하고 HTTP 상태 코드와 함께 반환
   public ResponseEntity<Map<String, Object>> getErrorResponse(
       HttpStatus status,
       String message

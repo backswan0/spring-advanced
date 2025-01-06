@@ -35,8 +35,10 @@ public class ManagerService {
       CreateManagerRequestDto requestDto
   ) {
 
+    // 인증된 사용자 정보에서 User 객체 생성
     User userFromAuth = User.fromAuthUser(authUserDto);
 
+    // todoId로 엔티티 조회 (예외 처리 포함)
     Todo foundTodo = EntityFinderUtil.findEntityById(
         todoRepository,
         todoId,
@@ -60,6 +62,7 @@ public class ManagerService {
       );
     }
 
+    // 관리자 할당 대상 User 조회 (예외 처리 포함)
     User foundUser = EntityFinderUtil.findEntityById(
         userRepository,
         requestDto.managerUserId(),
@@ -92,6 +95,8 @@ public class ManagerService {
 
   @Transactional(readOnly = true)
   public List<ManagerResponseDto> readAllManagers(long todoId) {
+
+    // todoId로 엔티티 조회 (예외 처리 포함)
     Todo foundTodo = EntityFinderUtil.findEntityById(
         todoRepository,
         todoId,
@@ -100,10 +105,12 @@ public class ManagerService {
 
     List<Manager> managerList = new ArrayList<>();
 
+    // 해당 엔티티에 할당된 관리자 목록 조회
     managerList = managerRepository.findAllByTodoId(foundTodo.getId());
 
     List<ManagerResponseDto> managerDtoList = new ArrayList<>();
 
+    // 조회한 관리자 목록을 DTO로 변환
     managerDtoList = managerList.stream()
         .map(manager -> {
               UserResponseDto responseDto = new UserResponseDto(
