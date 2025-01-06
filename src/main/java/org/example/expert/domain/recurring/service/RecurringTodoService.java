@@ -1,5 +1,7 @@
 package org.example.expert.domain.recurring.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.common.entity.RecurringTodo;
 import org.example.expert.common.entity.User;
@@ -37,19 +39,28 @@ public class RecurringTodoService {
       frequency = "DAILY";
     }
 
-    RecurringTodo recurringTodo = new RecurringTodo(
-        requestDto.title(),
-        requestDto.contents(),
-        foundWeather,
-        userFromAuth,
-        frequency,
-        requestDto.startedAt(),
-        requestDto.endedAt(),
-        dayOfWeek,
-        requestDto.repeatCount()
-    );
+    List<RecurringTodo> recurringTodoList = new ArrayList<>();
 
-    RecurringTodo savedRecurringTodo = recurringTodoRepository.save(recurringTodo);
+    for (int i = 0; i < requestDto.repeatCount(); i++) {
+      RecurringTodo recurringTodo = new RecurringTodo(
+          requestDto.title(),
+          requestDto.contents(),
+          foundWeather,
+          userFromAuth,
+          frequency,
+          requestDto.startedAt().plusWeeks(i),
+          requestDto.endedAt().plusWeeks(i),
+          dayOfWeek,
+          requestDto.repeatCount()
+      );
+      recurringTodoList.add(
+          recurringTodoRepository.save(recurringTodo)
+      );
+    }
+
+    RecurringTodo savedRecurringTodo = recurringTodoList.get(
+        recurringTodoList.size() - 1
+    );
 
     return new CreateRecurringTodoResponseDto(
         savedRecurringTodo.getId(),

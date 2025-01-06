@@ -9,7 +9,7 @@ public record CreateRecurringTodoResponseDto(
     String title,
     String contents,
     String weather,
-    String repeatInterval,
+    String frequency,
     LocalDateTime startedAt,
     LocalDateTime endedAt,
     DayOfWeek dayOfWeek,
